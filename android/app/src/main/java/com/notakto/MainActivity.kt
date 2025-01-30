@@ -1,4 +1,4 @@
-package com.notakto
+package com.lastcross
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

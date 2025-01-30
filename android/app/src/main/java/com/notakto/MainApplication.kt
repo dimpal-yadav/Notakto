@@ -1,4 +1,4 @@
-package com.notakto
+package com.lastcross
 
 import android.app.Application
 import com.facebook.react.PackageList

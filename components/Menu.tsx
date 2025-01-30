@@ -8,7 +8,7 @@ type MenuProps = {
 
 const Menu = ({ startGame, showTutorial }: MenuProps) => (
   <View style={styles.menuContainer}>
-    <Text style={styles.title}>Notaktotic</Text>
+    <Text style={styles.title}>Last Cross</Text>
     <TouchableOpacity
       style={styles.menuButton}
       onPress={() => startGame('vsPlayer')}
