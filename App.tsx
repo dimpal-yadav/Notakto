@@ -1,118 +1,173 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import Menu from './components/Menu';
+import Game  from './components/Game';
+import TutorialModal  from './components/modals/TutorialModal';
+import PlayerNamesModal from './components/modals/PlayerNamesModal';
+import WinnerModal  from './components/modals/WinnerModal';
+//import { useSound } from './hooks/useSound';
+import type { BoardState, GameMode } from './types';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+const App = () => {
+  // Game State
+  const [boards, setBoards] = useState<BoardState[]>(
+    Array(3).fill(null).map(() => Array(9).fill(''))
   );
-}
+  const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
+  const [gameMode, setGameMode] = useState<GameMode>(null);
+  const [gameHistory, setGameHistory] = useState<BoardState[][]>([boards]);
+  
+  // Player State
+  const [player1Name, setPlayer1Name] = useState('Player 1');
+  const [player2Name, setPlayer2Name] = useState('Player 2');
+  
+  // Modal States
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [winner, setWinner] = useState('');
+  
+  // Sound Hook
+  //const { playSound, moveSound, gameEndSound } = useSound();
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // Game Logic
+  const checkWin = (board: BoardState) => {
+    const winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    return winPatterns.some(pattern => 
+      pattern.every(index => board[index] === 'X')
+    );
   };
 
+  const isBoardDead = (board: BoardState) => checkWin(board);
+
+  const handleMove = (boardIndex: number, cellIndex: number) => {
+    if (boards[boardIndex][cellIndex] !== '' || isBoardDead(boards[boardIndex])) return;
+
+    const newBoards = boards.map((board, idx) =>
+      idx === boardIndex ? 
+        [...board.slice(0, cellIndex), 'X', ...board.slice(cellIndex + 1)] 
+        : [...board]
+    );
+
+    setBoards(newBoards);
+    setGameHistory([...gameHistory, newBoards]);
+    //playSound(moveSound!);
+
+    if (newBoards.every(board => isBoardDead(board))) {
+      //playSound(gameEndSound!);
+      const winner = currentPlayer === 1 ? player2Name : player1Name;
+      setWinner(winner);
+      setShowWinnerModal(true);
+      return;
+    }
+
+    setCurrentPlayer(prev => prev === 1 ? 2 : 1);
+  };
+  // Computer Move Handler
+  useEffect(() => {
+    if (gameMode === 'vsComputer' && currentPlayer === 2) {
+      const availableMoves = boards
+        .flatMap((board, bIdx) => 
+          board.map((cell, cIdx) => 
+            cell === '' && !isBoardDead(boards[bIdx]) ? { bIdx, cIdx } : null
+          )
+        )
+        .filter(Boolean);
+
+      if (availableMoves.length > 0) {
+        const randomMove = availableMoves[
+          Math.floor(Math.random() * availableMoves.length)
+        ] as { bIdx: number; cIdx: number };
+        
+        setTimeout(() => handleMove(randomMove.bIdx, randomMove.cIdx), 200);
+      }
+    }
+  }, [currentPlayer, gameMode]);
+
+  const resetGame = () => {
+    const initialBoards = Array(3).fill(null).map(() => Array(9).fill(''));
+    setBoards(initialBoards);
+    setCurrentPlayer(1);
+    setGameHistory([initialBoards]); // Initialize with the new boards
+    setShowWinnerModal(false);
+  };
+  
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <View style={styles.container}>
+      {gameMode ? ( //display the game
+        <Game
+          currentPlayer={currentPlayer === 1 ? player1Name : player2Name}
+          boards={boards}
+          makeMove={handleMove}
+          isBoardDead={isBoardDead}
+          undoMove={() => {
+            if (gameHistory.length > 2) {
+              setBoards(gameHistory[gameHistory.length - 3]);
+              setGameHistory(gameHistory.slice(0, -2));
+              setCurrentPlayer(1);
+            }
+          }}
+          resetGame={resetGame}
+          exitToMenu={() => setGameMode(null)}
+          gameMode={gameMode}
+        />
+      ) : ( //no game mode selected yet
+        <Menu
+          startGame={(mode) => {
+            if (mode === 'vsPlayer') setShowNameModal(true);
+            if(mode==='vsComputer'){
+              setPlayer1Name('You');
+              setPlayer2Name('Computer');
+            }
+            setGameMode(mode);
+            resetGame();
+          }}
+          showTutorial={() => setShowTutorial(true)}
+        />
+      )}
+
+      <TutorialModal
+        visible={showTutorial}
+        onClose={() => setShowTutorial(false)}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+
+      <PlayerNamesModal
+        visible={showNameModal}
+        onSubmit={(p1, p2) => {
+          setPlayer1Name(p1 || 'Player 1');
+          setPlayer2Name(p2 || 'Player 2');
+          setShowNameModal(false);
+        }}
+      />
+
+      <WinnerModal
+        visible={showWinnerModal}
+        winner={winner}
+        onPlayAgain={() => {
+          setShowWinnerModal(false);
+          resetGame();
+        }}
+        onMenu={() => {
+          setShowWinnerModal(false);
+          setGameMode(null);
+        }}
+      />
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+    //padding: 20,
   },
 });
+
+
 
 export default App;
