@@ -23,3 +23,6 @@ cd android
 gradlew assembleRelease for apk(s)
 gradlew bundleRelease for aab
 gradlew clean for reseting the changes made by assemble/bundle
+
+
+visit linktr.ee/rakshitg600 for app
