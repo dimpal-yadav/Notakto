@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 type WinnerModalProps = {
   visible: boolean;
@@ -10,21 +11,23 @@ type WinnerModalProps = {
 
 const WinnerModal = ({ visible, winner, onPlayAgain, onMenu }: WinnerModalProps) => (
     <Modal visible={visible} transparent animationType="slide">
-    <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Game Over!</Text>
-        <Text style={styles.winnerText}>{(winner=='You')?(`You won!`):(`${winner} wins`)}</Text>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={onPlayAgain}>
-            <Text style={styles.buttonText}>Play Again</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.button, styles.menuButton]} onPress={onMenu}>
-            <Text style={styles.buttonText}>Main Menu</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <View style={styles.modalContainer}>
+        <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Game Over!</Text>
+          <Text style={styles.winnerText}>{(winner=='You')?(`You won!`):(`${winner} wins`)}</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={onPlayAgain}>
+              <LinearGradient colors={['#FF66B2', '#FF1493']} style={styles.button}>
+                <Text style={styles.buttonText}>Play Again</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity  onPress={onMenu}>
+              <LinearGradient colors={['#00E1FF', '#0078FF']} style={[styles.button, styles.menuButton]}>
+                <Text style={styles.buttonText}>Main Menu</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
       </View>
     </Modal>
 );
@@ -47,11 +50,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
+    color: 'black',
   },
   winnerText: {
     fontSize: 20,
-    color: '#4a90e2',
+    color: 'black',
     fontWeight: '600',
     marginBottom: 25,
   },

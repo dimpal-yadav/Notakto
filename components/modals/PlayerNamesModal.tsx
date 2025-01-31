@@ -14,7 +14,7 @@ const PlayerNamesModal = ({ visible, onSubmit }: PlayerNamesModalProps) => {
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
-        <LinearGradient colors={['#8636C8', '#4A00E0']} style={styles.modalContent}>
+        <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalContent}>
           <Text style={styles.modalTitle}>Enter Player Names</Text>
 
           <TextInput
@@ -36,7 +36,7 @@ const PlayerNamesModal = ({ visible, onSubmit }: PlayerNamesModalProps) => {
           <TouchableOpacity 
             onPress={() => onSubmit(player1 || 'Player 1', player2 || 'Player 2')}
           >
-            <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalButton}>
+            <LinearGradient colors={['#00E1FF', '#0078FF']} style={styles.modalButton}>
               <Text style={styles.modalButtonText}>Start Game</Text>
             </LinearGradient>
           </TouchableOpacity>

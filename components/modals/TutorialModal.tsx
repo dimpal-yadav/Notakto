@@ -10,7 +10,7 @@ type TutorialModalProps = {
 const TutorialModal = ({ visible, onClose }: TutorialModalProps) => (
   <Modal visible={visible} transparent animationType="slide">
     <View style={styles.modalContainer}>
-      <LinearGradient colors={['#8636C8', '#4A00E0']} style={styles.modalContent}>
+      <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalContent}>
         <Text style={styles.modalTitle}>How to Play Notakto</Text>
         
         <Text style={styles.modalText}>
@@ -23,7 +23,7 @@ const TutorialModal = ({ visible, onClose }: TutorialModalProps) => (
         </Text>
 
         <TouchableOpacity onPress={onClose}>
-          <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalButton}>
+          <LinearGradient colors={['#00E1FF', '#0078FF']} style={styles.modalButton}>
             <Text style={styles.modalButtonText}>Got It!</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -49,13 +49,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
   },
   modalText: {
     fontSize: 16,
     lineHeight: 24,
     marginBottom: 20,
-    color: 'white',
+    color: 'black',
   },
   modalButton: {
     padding: 12,
