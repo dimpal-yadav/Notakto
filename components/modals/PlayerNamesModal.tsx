@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   modalButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#8636C8',
     padding: 12,
     borderRadius: 5,
     alignItems: 'center',
