@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 type TutorialModalProps = {
   visible: boolean;
@@ -9,7 +10,7 @@ type TutorialModalProps = {
 const TutorialModal = ({ visible, onClose }: TutorialModalProps) => (
   <Modal visible={visible} transparent animationType="slide">
     <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
+      <LinearGradient colors={['#8636C8', '#4A00E0']} style={styles.modalContent}>
         <Text style={styles.modalTitle}>How to Play Notakto</Text>
         
         <Text style={styles.modalText}>
@@ -21,10 +22,12 @@ const TutorialModal = ({ visible, onClose }: TutorialModalProps) => (
           • Strategy: Force opponent to make final move!
         </Text>
 
-        <TouchableOpacity style={styles.modalButton} onPress={onClose}>
-          <Text style={styles.modalButtonText}>Got It!</Text>
+        <TouchableOpacity onPress={onClose}>
+          <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalButton}>
+            <Text style={styles.modalButtonText}>Got It!</Text>
+          </LinearGradient>
         </TouchableOpacity>
-      </View>
+      </LinearGradient>
     </View>
   </Modal>
 );
@@ -37,7 +40,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
     width: '80%',
@@ -47,16 +49,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
-    color: '#333',
+    color: 'white',
   },
   modalText: {
     fontSize: 16,
     lineHeight: 24,
     marginBottom: 20,
-    color: '#666',
+    color: 'white',
   },
   modalButton: {
-    backgroundColor: '#8636C8',
     padding: 12,
     borderRadius: 5,
     alignItems: 'center',

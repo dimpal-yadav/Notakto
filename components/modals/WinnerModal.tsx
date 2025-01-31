@@ -13,7 +13,7 @@ const WinnerModal = ({ visible, winner, onPlayAgain, onMenu }: WinnerModalProps)
     <View style={styles.modalContainer}>
       <View style={styles.modalContent}>
         <Text style={styles.modalTitle}>Game Over!</Text>
-        <Text style={styles.winnerText}>{winner} Wins!</Text>
+        <Text style={styles.winnerText}>{(winner=='You')?(`You won!`):(`${winner} wins`)}</Text>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={onPlayAgain}>

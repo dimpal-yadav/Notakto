@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Board from './Board';
 
 type GameProps = {
@@ -23,42 +24,52 @@ const Game = ({
   exitToMenu,
   gameMode,
 }: GameProps) => (
-  <View style={styles.container}>
-    <Text style={styles.header}>Current Player: {currentPlayer}</Text>
-    
-    <ScrollView contentContainerStyle={styles.boardsContainer}>
-      {boards.map((board, index) => (
-        <Board
-          key={index}
-          boardIndex={index}
-          boardState={board}
-          makeMove={makeMove}
-          isDead={isBoardDead(board)}
-        />
-      ))}
-    </ScrollView>
+  <LinearGradient colors={['#8636C8', '#4A00E0']} style={styles.gradientContainer}>
+    <View style={styles.container}>
+      <Text style={styles.header}>Current Player: {currentPlayer}</Text>
+      
+      <ScrollView contentContainerStyle={styles.boardsContainer}>
+        {boards.map((board, index) => (
+          <Board
+            key={index}
+            boardIndex={index}
+            boardState={board}
+            makeMove={makeMove}
+            isDead={isBoardDead(board)}
+          />
+        ))}
+      </ScrollView>
 
-    <View style={styles.controls}>
-      {gameMode === 'vsComputer' && (
-        <TouchableOpacity style={styles.button} onPress={undoMove}>
-          <Text style={styles.buttonText}>Undo</Text>
+      <View style={styles.controls}>
+        {gameMode === 'vsComputer' && (
+          <TouchableOpacity onPress={undoMove}>
+            <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.button}>
+              <Text style={styles.buttonText}>Undo</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity onPress={resetGame}>
+          <LinearGradient colors={['#FF66B2', '#FF1493']} style={styles.button}>
+            <Text style={styles.buttonText}>Reset</Text>
+          </LinearGradient>
         </TouchableOpacity>
-      )}
-      <TouchableOpacity style={styles.button} onPress={resetGame}>
-        <Text style={styles.buttonText}>Reset</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={exitToMenu}>
-        <Text style={styles.buttonText}>Menu</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={exitToMenu}>
+          <LinearGradient colors={['#00E1FF', '#0078FF']} style={styles.button}>
+            <Text style={styles.buttonText}>Menu</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
+  </LinearGradient>
 );
 
 const styles = StyleSheet.create({
+  gradientContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor:'black'
   },
   header: {
     fontSize: 24,
@@ -80,7 +91,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   button: {
-    backgroundColor: '#8636C8',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
