@@ -5,6 +5,7 @@ import Game  from './components/Game';
 import TutorialModal  from './components/modals/TutorialModal';
 import PlayerNamesModal from './components/modals/PlayerNamesModal';
 import WinnerModal  from './components/modals/WinnerModal';
+import { BoardConfigModal } from './components/modals/BoardConfigModal';
 //import { useSound } from './hooks/useSound';
 import type { BoardState, GameMode } from './types';
 
@@ -16,6 +17,8 @@ const App = () => {
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [gameMode, setGameMode] = useState<GameMode>(null);
   const [gameHistory, setGameHistory] = useState<BoardState[][]>([boards]);
+  const [numberOfBoards, setNumberOfBoards] = useState(3);
+  const [showBoardConfig, setShowBoardConfig] = useState(false);
   
   // Player State
   const [player1Name, setPlayer1Name] = useState('Player 1');
@@ -89,13 +92,20 @@ const App = () => {
   }, [currentPlayer, gameMode]);
 
   const resetGame = () => {
-    const initialBoards = Array(3).fill(null).map(() => Array(9).fill(''));
+    const initialBoards = Array(numberOfBoards).fill(null).map(() => Array(9).fill(''));
     setBoards(initialBoards);
     setCurrentPlayer(1);
-    setGameHistory([initialBoards]); // Initialize with the new boards
+    setGameHistory([initialBoards]);
     setShowWinnerModal(false);
   };
   
+  const handleBoardNumberChange = (num: number) => {
+    if (num > 0 && num <= 5) { // Limit to 5 boards max
+      setNumberOfBoards(num);
+      resetGame();
+      setShowBoardConfig(false);
+    }
+  };
   return (
     <View style={styles.container}>
       {gameMode ? ( //display the game
@@ -114,6 +124,8 @@ const App = () => {
           resetGame={resetGame}
           exitToMenu={() => setGameMode(null)}
           gameMode={gameMode}
+          numberOfBoards={numberOfBoards}
+          onBoardConfigPress={() => setShowBoardConfig(true)}
         />
       ) : ( //no game mode selected yet
         <Menu
@@ -156,6 +168,13 @@ const App = () => {
           setGameMode(null);
         }}
       />
+
+  <BoardConfigModal
+    visible={showBoardConfig}
+    currentBoards={numberOfBoards}
+    onConfirm={handleBoardNumberChange}
+    onCancel={() => setShowBoardConfig(false)}
+  />
     </View>
   );
 };

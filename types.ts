@@ -52,4 +52,11 @@ export type GameConfig = {
   computerMoveDelay: number;
 };
 
+export type BoardConfigModalProps = {
+  visible: boolean;
+  currentBoards: number;
+  onConfirm: (num: number) => void;
+  onCancel: () => void;
+};
+
 export type SoundType = 'move' | 'win' | 'reset';

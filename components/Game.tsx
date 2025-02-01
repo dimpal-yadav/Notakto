@@ -12,6 +12,8 @@ type GameProps = {
   resetGame: () => void;
   exitToMenu: () => void;
   gameMode: 'vsComputer' | 'vsPlayer' | null;
+  numberOfBoards: number;
+  onBoardConfigPress: () => void;
 };
 
 const Game = ({
@@ -23,6 +25,8 @@ const Game = ({
   resetGame,
   exitToMenu,
   gameMode,
+  numberOfBoards, 
+  onBoardConfigPress
 }: GameProps) => (
   <LinearGradient colors={['#8636C8', '#4A00E0']} style={styles.gradientContainer}>
     <View style={styles.container}>
@@ -41,6 +45,9 @@ const Game = ({
       </ScrollView>
 
       <View style={styles.controls}>
+        <TouchableOpacity style={[styles.button, styles.boardConfigButton]} onPress={onBoardConfigPress}>
+          <Text style={styles.buttonText}>Boards: {numberOfBoards}</Text>
+        </TouchableOpacity>
         {gameMode === 'vsComputer' && (
           <TouchableOpacity onPress={undoMove}>
             <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.button}>
@@ -89,6 +96,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
     marginTop: 20,
+    flexWrap: 'wrap'
   },
   button: {
     paddingVertical: 12,
@@ -96,6 +104,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     minWidth: 100,
     alignItems: 'center',
+    margin: 4
+  },
+  boardConfigButton: {
+    backgroundColor: '#2c3e50', // Different color for distinction
   },
   buttonText: {
     color: 'white',
