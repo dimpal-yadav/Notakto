@@ -59,4 +59,6 @@ export type BoardConfigModalProps = {
   onCancel: () => void;
 };
 
+export type DifficultyLevel = 1 | 2 | 3 | 4 | 5;
+
 export type SoundType = 'move' | 'win' | 'reset';

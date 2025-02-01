@@ -14,6 +14,8 @@ type GameProps = {
   gameMode: 'vsComputer' | 'vsPlayer' | null;
   numberOfBoards: number;
   onBoardConfigPress: () => void;
+  difficulty?: number;
+  onDifficultyPress?: () => void;
 };
 
 const Game = ({
@@ -25,13 +27,15 @@ const Game = ({
   resetGame,
   exitToMenu,
   gameMode,
-  numberOfBoards, 
-  onBoardConfigPress
+  numberOfBoards,
+  onBoardConfigPress,
+  difficulty,
+  onDifficultyPress
 }: GameProps) => (
   <LinearGradient colors={['#8636C8', '#4A00E0']} style={styles.gradientContainer}>
     <View style={styles.container}>
       <Text style={styles.header}>Current Player: {currentPlayer}</Text>
-      
+
       <ScrollView contentContainerStyle={styles.boardsContainer}>
         {boards.map((board, index) => (
           <Board
@@ -65,6 +69,13 @@ const Game = ({
             <Text style={styles.buttonText}>Menu</Text>
           </LinearGradient>
         </TouchableOpacity>
+        {gameMode === 'vsComputer' && (
+          <TouchableOpacity onPress={onDifficultyPress}>
+            <LinearGradient colors={['#FF66B2', '#FF1493']} style={styles.button}>
+              <Text style={styles.buttonText}>AI Level: {difficulty}</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   </LinearGradient>
