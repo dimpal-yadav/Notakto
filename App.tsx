@@ -91,8 +91,8 @@ const App = () => {
     }
   }, [currentPlayer, gameMode]);
 
-  const resetGame = () => {
-    const initialBoards = Array(numberOfBoards).fill(null).map(() => Array(9).fill(''));
+  const resetGame = (num:number) => {
+    const initialBoards = Array(num).fill(null).map(() => Array(9).fill(''));
     setBoards(initialBoards);
     setCurrentPlayer(1);
     setGameHistory([initialBoards]);
@@ -102,7 +102,7 @@ const App = () => {
   const handleBoardNumberChange = (num: number) => {
     if (num > 0 && num <= 5) { // Limit to 5 boards max
       setNumberOfBoards(num);
-      resetGame();
+      resetGame(num);
       setShowBoardConfig(false);
     }
   };
@@ -121,7 +121,7 @@ const App = () => {
               setCurrentPlayer(1);
             }
           }}
-          resetGame={resetGame}
+          resetGame={()=>resetGame(numberOfBoards)}
           exitToMenu={() => setGameMode(null)}
           gameMode={gameMode}
           numberOfBoards={numberOfBoards}
@@ -136,7 +136,7 @@ const App = () => {
               setPlayer2Name('Computer');
             }
             setGameMode(mode);
-            resetGame();
+            resetGame(numberOfBoards);
           }}
           showTutorial={() => setShowTutorial(true)}
         />
@@ -161,7 +161,7 @@ const App = () => {
         winner={winner}
         onPlayAgain={() => {
           setShowWinnerModal(false);
-          resetGame();
+          resetGame(numberOfBoards);
         }}
         onMenu={() => {
           setShowWinnerModal(false);
