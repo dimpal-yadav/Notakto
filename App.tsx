@@ -7,9 +7,17 @@ import PlayerNamesModal from './components/modals/PlayerNamesModal';
 import WinnerModal from './components/modals/WinnerModal';
 import { BoardConfigModal } from './components/modals/BoardConfigModal';
 import { DifficultyModal } from './components/modals/DifficultyModal';
+import { StatsModal } from './components/modals/StatsModal';
 //import { useSound } from './hooks/useSound';
-import type { BoardState, GameMode, DifficultyLevel } from './types';
+import type { BoardState, GameMode, DifficultyLevel, GameStats } from './types';
 import { findBestMove } from './ai';
+import { getDefaultStats } from './statsUtils';
+import { 
+  loadStats, 
+  updateStats, 
+  resetStats as resetStorageStats  // Rename imported function
+} from './statsUtils';
+
 
 const App = () => {
   // Game State
@@ -34,6 +42,8 @@ const App = () => {
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [winner, setWinner] = useState('');
 
+  const [stats, setStats] = useState<GameStats>(getDefaultStats());
+  const [showStatsModal, setShowStatsModal] = useState(false);
   // Sound Hook
   //const { playSound, moveSound, gameEndSound } = useSound();
 
@@ -103,6 +113,26 @@ const App = () => {
       }
     }
   }, [currentPlayer, gameMode, boards, difficulty]);
+// Load stats on mount
+useEffect(() => {
+  const loadInitialStats = async () => {
+    const loadedStats = await loadStats();
+    setStats(loadedStats);
+  };
+  loadInitialStats();
+}, []);
+
+// Update stats when game ends
+useEffect(() => {
+  if (showWinnerModal) {
+    const isWin = winner === (gameMode === 'vsComputer' ? player1Name : player2Name);
+    const difficultyLevel = gameMode === 'vsComputer' ? difficulty : undefined;
+    
+    updateStats(isWin, difficultyLevel).then(updatedStats => {
+      setStats(updatedStats);
+    });
+  }
+}, [showWinnerModal]);
 
   const resetGame = (num: number) => {
     const initialBoards = Array(num).fill(null).map(() => Array(9).fill(''));
@@ -118,6 +148,10 @@ const App = () => {
       resetGame(num);
       setShowBoardConfig(false);
     }
+  };
+  const handleResetStats = async () => {
+    const resetStats = await resetStorageStats();  // Use renamed import
+    setStats(resetStats);
   };
   return (
     <View style={styles.container}>
@@ -141,6 +175,7 @@ const App = () => {
           onBoardConfigPress={() => setShowBoardConfig(true)}
           difficulty={difficulty}
           onDifficultyPress={()=>setShowDifficultyModal(true)}
+          onStatsPress={() => setShowStatsModal(true)}
         />
       ) : ( //no game mode selected yet
         <Menu
@@ -200,6 +235,13 @@ const App = () => {
         }}
         onClose={() => setShowDifficultyModal(false)}
       />
+      <StatsModal
+        visible={showStatsModal}
+        stats={stats}
+        onClose={() => setShowStatsModal(false)}
+        onReset={handleResetStats}  // Use the handler instead of direct reset
+      />
+
     </View>
   );
 };
