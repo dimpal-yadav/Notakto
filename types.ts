@@ -61,16 +61,3 @@ export type BoardConfigModalProps = {
 
 export type DifficultyLevel = 1 | 2 | 3 | 4 | 5;
 
-export type SoundType = 'move' | 'win' | 'reset';
-
-export type GameStats = {
-  totalGames: number;
-  totalWins: number;
-  totalLosses: number;
-  difficultyStats: {
-    [key: number]: {
-      wins: number;
-      losses: number;
-    };
-  };
-};

@@ -7,16 +7,8 @@ import PlayerNamesModal from './components/modals/PlayerNamesModal';
 import WinnerModal from './components/modals/WinnerModal';
 import { BoardConfigModal } from './components/modals/BoardConfigModal';
 import { DifficultyModal } from './components/modals/DifficultyModal';
-import { StatsModal } from './components/modals/StatsModal';
-//import { useSound } from './hooks/useSound';
-import type { BoardState, GameMode, DifficultyLevel, GameStats } from './types';
+import type { BoardState, GameMode, DifficultyLevel} from './types';
 import { findBestMove } from './ai';
-import { getDefaultStats } from './statsUtils';
-import { 
-  loadStats, 
-  updateStats, 
-  resetStats as resetStorageStats  // Rename imported function
-} from './statsUtils';
 
 
 const App = () => {
@@ -42,10 +34,6 @@ const App = () => {
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [winner, setWinner] = useState('');
 
-  const [stats, setStats] = useState<GameStats>(getDefaultStats());
-  const [showStatsModal, setShowStatsModal] = useState(false);
-  // Sound Hook
-  //const { playSound, moveSound, gameEndSound } = useSound();
 
   // Game Logic
   const checkWin = (board: BoardState) => {
@@ -85,26 +73,6 @@ const App = () => {
     setCurrentPlayer(prev => prev === 1 ? 2 : 1);
   };
 
-  // // Computer Move Handler
-  // useEffect(() => {
-  //   if (gameMode === 'vsComputer' && currentPlayer === 2) {
-  //     const availableMoves = boards
-  //       .flatMap((board, bIdx) => 
-  //         board.map((cell, cIdx) => 
-  //           cell === '' && !isBoardDead(boards[bIdx]) ? { bIdx, cIdx } : null
-  //         )
-  //       )
-  //       .filter(Boolean);
-
-  //     if (availableMoves.length > 0) {
-  //       const randomMove = availableMoves[
-  //         Math.floor(Math.random() * availableMoves.length)
-  //       ] as { bIdx: number; cIdx: number };
-
-  //       setTimeout(() => handleMove(randomMove.bIdx, randomMove.cIdx), 200);
-  //     }
-  //   }
-  // }, [currentPlayer, gameMode]);
   useEffect(() => {
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
       const move = findBestMove(boards, difficulty);
@@ -113,26 +81,6 @@ const App = () => {
       }
     }
   }, [currentPlayer, gameMode, boards, difficulty]);
-// Load stats on mount
-useEffect(() => {
-  const loadInitialStats = async () => {
-    const loadedStats = await loadStats();
-    setStats(loadedStats);
-  };
-  loadInitialStats();
-}, []);
-
-// Update stats when game ends
-useEffect(() => {
-  if (showWinnerModal) {
-    const isWin = winner === (gameMode === 'vsComputer' ? player1Name : player2Name);
-    const difficultyLevel = gameMode === 'vsComputer' ? difficulty : undefined;
-    
-    updateStats(isWin, difficultyLevel).then(updatedStats => {
-      setStats(updatedStats);
-    });
-  }
-}, [showWinnerModal]);
 
   const resetGame = (num: number) => {
     const initialBoards = Array(num).fill(null).map(() => Array(9).fill(''));
@@ -148,10 +96,6 @@ useEffect(() => {
       resetGame(num);
       setShowBoardConfig(false);
     }
-  };
-  const handleResetStats = async () => {
-    const resetStats = await resetStorageStats();  // Use renamed import
-    setStats(resetStats);
   };
   return (
     <View style={styles.container}>
@@ -175,7 +119,7 @@ useEffect(() => {
           onBoardConfigPress={() => setShowBoardConfig(true)}
           difficulty={difficulty}
           onDifficultyPress={()=>setShowDifficultyModal(true)}
-          onStatsPress={() => setShowStatsModal(true)}
+          // onStatsPress={() => setShowStatsModal(true)}
         />
       ) : ( //no game mode selected yet
         <Menu
@@ -235,13 +179,6 @@ useEffect(() => {
         }}
         onClose={() => setShowDifficultyModal(false)}
       />
-      <StatsModal
-        visible={showStatsModal}
-        stats={stats}
-        onClose={() => setShowStatsModal(false)}
-        onReset={handleResetStats}  // Use the handler instead of direct reset
-      />
-
     </View>
   );
 };
@@ -250,7 +187,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
-    //padding: 20,
   },
 });
 

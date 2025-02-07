@@ -16,7 +16,6 @@ type GameProps = {
   onBoardConfigPress: () => void;
   difficulty?: number;
   onDifficultyPress?: () => void;
-  onStatsPress: () => void;
 };
 
 type AnimatedButtonProps = {
@@ -179,7 +178,15 @@ const Game = (props: GameProps) => {
                     onPress={props.resetGame}
                     label="Reset"
                     width={screenWidth * 0.8}
-                  />
+                    />
+                    {props.gameMode === 'vsComputer' && (
+                      <AnimatedButton
+                        colors={['#8E44AD', '#9B59B6']}
+                        onPress={props.onDifficultyPress!}
+                        label={`AI Level: ${props.difficulty}`}
+                        width={screenWidth * 0.8}
+                      />
+                    )}
 
                   <AnimatedButton
                     colors={['#00E1FF', '#0078FF']}
@@ -188,23 +195,6 @@ const Game = (props: GameProps) => {
                     width={screenWidth * 0.8}
                   />
 
-                  {props.gameMode === 'vsComputer' && (
-                    <AnimatedButton
-                      colors={['#8E44AD', '#9B59B6']}
-                      onPress={props.onDifficultyPress!}
-                      label={`AI Level: ${props.difficulty}`}
-                      width={screenWidth * 0.8}
-                    />
-                  )}
-
-                  {props.gameMode === 'vsComputer' && (
-                    <AnimatedButton
-                      colors={['#7ED321', '#417505']}
-                      onPress={props.onStatsPress}
-                      label="Player Stats"
-                      width={screenWidth * 0.8}
-                    />
-                  )}
                 </View>
               </LinearGradient>
             </Animated.View>
