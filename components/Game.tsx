@@ -159,6 +159,7 @@ const Game = (props: GameProps) => {
             }]}>
               <LinearGradient colors={['#ffffff', '#f8f9fa']} style={styles.menuPanel}>
                 <View style={styles.menuContent}>
+                
                   <AnimatedButton
                     colors={['#34495E', '#2C3E50']}
                     onPress={props.onBoardConfigPress}
@@ -196,7 +197,12 @@ const Game = (props: GameProps) => {
                     label="Main Menu"
                     width={screenWidth * 0.8}
                   />
-
+                  <AnimatedButton
+                    colors={['#34495E', '#2C3E50']}
+                    onPress={closeMenu}
+                    label={`Return to Game`}
+                    width={screenWidth * 0.8}
+                  />
                 </View>
               </LinearGradient>
             </Animated.View>
@@ -229,16 +235,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    paddingBottom: 20,
+    paddingBottom: 20
   },
   footer: {
-    position: 'absolute',
-    bottom: 20,
+    position: 'relative',
+    bottom: 0,
     left: 0,
     right: 0,
     alignItems: 'center',
     paddingHorizontal: 16,
     zIndex: 1,
+    marginTop: 0
   },
   menuButton: {
     paddingVertical: 18,
