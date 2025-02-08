@@ -1,5 +1,7 @@
 import type { BoardState, DifficultyLevel, BoardSize } from './types';
 
+const MAX_DEPTH = 4; // Maximum allowed search depth
+
 const getWinPatterns = (size: number) => {
   const patterns = [];
   // Rows
@@ -16,117 +18,139 @@ const getWinPatterns = (size: number) => {
   return patterns;
 };
 
-export const findBestMove = (
-  boards: BoardState[],
-  difficulty: DifficultyLevel,
-  boardSize: number
-) => {
-  const validMoves = getValidMoves(boards, boardSize);
-  if (validMoves.length === 0) return null;
-
-  // For difficulty levels 1-3 use random with increasing smartness
-  if (difficulty <= 3) {
-    const safeMoves = validMoves.filter(move => 
-      !wouldCreateWin(boards[move.boardIndex], move.cellIndex, boardSize)
-    );
-    const movesToConsider = safeMoves.length > 0 ? safeMoves : validMoves;
-    return movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
-  }
-
-  // For higher difficulties use minimax with depth based on difficulty
-  const depth = difficulty - 2;
-  let bestScore = -Infinity;
-  let bestMoves = [validMoves[0]];
-
-  validMoves.forEach(move => {
-    const newBoards = boards.map((b, i) => 
-      i === move.boardIndex ? [
-        ...b.slice(0, move.cellIndex),
-        'X',
-        ...b.slice(move.cellIndex + 1)
-      ] : [...b]
-    );
-    const score = minimax(newBoards, depth, false, boardSize);
-    if (score > bestScore) {
-      bestScore = score;
-      bestMoves = [move];
-    } else if (score === bestScore) {
-      bestMoves.push(move);
-    }
+const evaluateBoard = (board: BoardState, boardSize: number) => {
+  const winPatterns = getWinPatterns(boardSize);
+  let score = 0;
+  
+  winPatterns.forEach(pattern => {
+    const xCount = pattern.filter(i => board[i] === 'X').length;
+    const empty = pattern.filter(i => board[i] === '').length;
+    
+    if (xCount === pattern.length) score += 100;
+    if (xCount === pattern.length - 1 && empty === 1) score += 10;
+    if (xCount === pattern.length - 2 && empty === 2) score += 1;
   });
-
-  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
-};
-
-const minimax = (
-  boards: BoardState[],
-  depth: number,
-  isMaximizing: boolean,
-  boardSize: number
-): number => {
-  if (depth === 0 || boards.every(b => isBoardDead(b, boardSize))) {
-    return evaluateBoards(boards, boardSize);
-  }
-
-  const validMoves = getValidMoves(boards, boardSize);
-  if (isMaximizing) {
-    let maxEval = -Infinity;
-    for (const move of validMoves) {
-      const newBoards = boards.map((b, i) => 
-        i === move.boardIndex ? [
-          ...b.slice(0, move.cellIndex),
-          'X',
-          ...b.slice(move.cellIndex + 1)
-        ] : [...b]
-      );
-      const evaluation = minimax(newBoards, depth - 1, false, boardSize);
-      maxEval = Math.max(maxEval, evaluation);
-    }
-    return maxEval;
-  } else {
-    let minEval = Infinity;
-    for (const move of validMoves) {
-      const newBoards = boards.map((b, i) => 
-        i === move.boardIndex ? [
-          ...b.slice(0, move.cellIndex),
-          'X',
-          ...b.slice(move.cellIndex + 1)
-        ] : [...b]
-      );
-      const evaluation = minimax(newBoards, depth - 1, true, boardSize);
-      minEval = Math.min(minEval, evaluation);
-    }
-    return minEval;
-  }
-};
-
-const evaluateBoards = (boards: BoardState[], boardSize: number) => {
-  return boards.filter(b => !isBoardDead(b, boardSize)).length * 100;
-};
-
-const getValidMoves = (boards: BoardState[], boardSize: number) => {
-  const validMoves: { boardIndex: number; cellIndex: number }[] = getValidMoves(boards, boardSize);
-  boards.forEach((board, boardIndex) => {
-    if (!isBoardDead(board, boardSize)) {
-      board.forEach((cell, cellIndex) => {
-        if (cell === '') {
-          validMoves.push({ boardIndex, cellIndex });
-        }
-      });
-    }
-  });
-  return validMoves;
+  
+  return score;
 };
 
 const isBoardDead = (board: BoardState, boardSize: number) => {
-  const winPatterns = getWinPatterns(boardSize);
-  return winPatterns.some(pattern =>
+  return getWinPatterns(boardSize).some(pattern =>
     pattern.every(index => board[index] === 'X')
   );
 };
 
-const wouldCreateWin = (board: BoardState, cellIndex: number, boardSize: number) => {
-  const tempBoard = [...board];
-  tempBoard[cellIndex] = 'X';
-  return isBoardDead(tempBoard, boardSize);
+const getValidMoves = (boards: BoardState[], boardSize: number) => {
+  const validMoves: { boardIndex: number; cellIndex: number }[] = [];
+  
+  boards.forEach((board, boardIndex) => {
+    if (!isBoardDead(board, boardSize)) {
+      board.forEach((cell, cellIndex) => {
+        if (cell === '') validMoves.push({ boardIndex, cellIndex });
+      });
+    }
+  });
+  
+  return validMoves;
+};
+
+const updateBoards = (boards: BoardState[], move: { boardIndex: number; cellIndex: number }) => {
+  return boards.map((b, i) => 
+    i === move.boardIndex ? [
+      ...b.slice(0, move.cellIndex),
+      'X',
+      ...b.slice(move.cellIndex + 1)
+    ] : [...b]
+  );
+};
+
+export const findBestMove = (
+  boards: BoardState[],
+  difficulty: DifficultyLevel,
+  boardSize: BoardSize
+) => {
+  const validMoves = getValidMoves(boards, boardSize);
+  if (validMoves.length === 0) return null;
+
+  const depth = Math.min(difficulty + 1, MAX_DEPTH);
+  let bestScore = -Infinity;
+  const bestMoves: typeof validMoves = [];
+
+  // Iterative Deepening Minimax
+  for (let currentDepth = 1; currentDepth <= depth; currentDepth++) {
+    const stack: any[] = [{
+      boards,
+      depth: currentDepth,
+      isMaximizing: true,
+      alpha: -Infinity,
+      beta: Infinity,
+      moveHistory: []
+    }];
+
+    while (stack.length > 0) {
+      const { boards: currentBoards, depth, isMaximizing, alpha, beta, moveHistory } = stack.pop()!;
+      if (depth === 0 || currentBoards.every((b: BoardState) => isBoardDead(b, boardSize))) {
+
+       const score = evaluateBoard(currentBoards[0], boardSize);
+        if (moveHistory.length > 0) {
+          const move = moveHistory[0];
+          if (score > bestScore) {
+            bestScore = score;
+            bestMoves.length = 0;
+            bestMoves.push(move);
+          } else if (score === bestScore) {
+            bestMoves.push(move);
+          }
+        }
+        continue;
+      }
+
+      const moves = getValidMoves(currentBoards, boardSize);
+      if (isMaximizing) {
+        let value = -Infinity;
+        let localAlpha = alpha;
+        
+        for (const move of moves) {
+          const newBoards = updateBoards(currentBoards, move);
+          stack.push({
+            boards: newBoards,
+            depth: depth - 1,
+            isMaximizing: false,
+            alpha: localAlpha,
+            beta,
+            moveHistory: [move, ...moveHistory]
+          });
+          
+          // Update value based on previous results
+          if (bestScore > value) value = bestScore;
+          if (value >= beta) break;
+          localAlpha = Math.max(localAlpha, value);
+        }
+      } else {
+        let value = Infinity;
+        let localBeta = beta;
+        
+        for (const move of moves) {
+          const newBoards = updateBoards(currentBoards, move);
+          stack.push({
+            boards: newBoards,
+            depth: depth - 1,
+            isMaximizing: true,
+            alpha,
+            beta: localBeta,
+            moveHistory: [move, ...moveHistory]
+          });
+          
+          // Update value based on previous results
+          if (bestScore < value) value = bestScore;
+          if (value <= alpha) break;
+          localBeta = Math.min(localBeta, value);
+        }
+      }
+    }
+  }
+
+  return bestMoves.length > 0 
+    ? bestMoves[Math.floor(Math.random() * bestMoves.length)]
+    : validMoves[Math.floor(Math.random() * validMoves.length)];
 };

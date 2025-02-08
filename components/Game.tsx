@@ -125,12 +125,15 @@ const Game = (props: GameProps) => {
     <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Text style={styles.header}>Current Player: {props.currentPlayer}</Text>
-          <View style={styles.economyInfo}>
-            <Text style={styles.economyText}>Coins: {props.coins}</Text>
-            <Text style={styles.economyText}>XP: {props.experience}</Text>
-          </View>
+          <Text style={styles.header}>{props.currentPlayer}</Text>
+          {props.gameMode === 'vsComputer' && (
+            <View style={styles.economyInfo}>
+              <Text style={styles.economyText}>Coins: {props.coins}</Text>
+              <Text style={styles.economyText}>XP: {props.experience}</Text>
+            </View>
+          )}
         </View>
+
         <ScrollView contentContainerStyle={styles.boardsContainer}>
           {props.boards.map((board: string[], index: number) => (
             <Board

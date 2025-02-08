@@ -8,8 +8,8 @@ import WinnerModal from './components/modals/WinnerModal';
 import BoardConfigModal from './components/modals/BoardConfigModal';
 import { DifficultyModal } from './components/modals/DifficultyModal';
 import { findBestMove } from './ai';
-import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './types';
 import { loadEconomy, saveEconomy, calculateRewards } from './economyUtils';
+import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './types';
 
 const App = () => {
   // Game State
@@ -23,6 +23,10 @@ const App = () => {
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(1);
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
 
+  // Economy State
+  const [coins, setCoins] = useState(1000);
+  const [experience, setExperience] = useState(0);
+
   // Player State
   const [player1Name, setPlayer1Name] = useState('Player 1');
   const [player2Name, setPlayer2Name] = useState('Player 2');
@@ -32,17 +36,20 @@ const App = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [winner, setWinner] = useState('');
-  const [coins, setCoins] = useState(1000);
-  const [experience, setExperience] = useState(0);
 
-  // Load economy data on mount
+  // Load economy data and initialize game
   useEffect(() => {
-    const loadInitialEconomy = async () => {
-      const { coins: savedCoins, experience: savedXP } = await loadEconomy();
-      setCoins(savedCoins);
-      setExperience(savedXP);
+    const loadData = async () => {
+      try {
+        const { coins: savedCoins, experience: savedXP } = await loadEconomy();
+        setCoins(savedCoins);
+        setExperience(savedXP);
+        resetGame(numberOfBoards, boardSize);
+      } catch (error) {
+        console.error('Failed to load data:', error);
+      }
     };
-    loadInitialEconomy();
+    loadData();
   }, []);
 
   // Save economy data when changed
@@ -50,34 +57,10 @@ const App = () => {
     saveEconomy(coins, experience);
   }, [coins, experience]);
 
-  // Update the winner effect
-  useEffect(() => {
-    if (showWinnerModal) {
-      const isWin = winner === (gameMode === 'vsComputer' ? player1Name : player2Name);
-      const rewards = calculateRewards(isWin, difficulty, numberOfBoards, boardSize);
-
-      if (isWin) {
-        setCoins(prev => prev + rewards.coins);
-      }
-      setExperience(prev => prev + rewards.xp);
-    }
-  }, [showWinnerModal]);
-
+  // Reset game when board configuration changes
   useEffect(() => {
     resetGame(numberOfBoards, boardSize);
   }, [numberOfBoards, boardSize]);
-  const handleUndo = () => {
-    if (coins >= 100) {
-      setCoins(prev => prev - 100);
-      if (gameHistory.length > 2) {
-        setBoards(gameHistory[gameHistory.length - 3]);
-        setGameHistory(gameHistory.slice(0, -2));
-        setCurrentPlayer(1);
-      }
-    } else {
-      Alert.alert('Not enough coins', 'You need at least 100 coins to undo!');
-    }
-  };
 
   const checkWin = (board: BoardState) => {
     const size = boardSize;
@@ -110,7 +93,13 @@ const App = () => {
     setGameHistory([...gameHistory, newBoards]);
 
     if (newBoards.every(board => isBoardDead(board))) {
-      setWinner(currentPlayer === 1 ? player2Name : player1Name);
+      const isWin = currentPlayer === 1;
+      const rewards = calculateRewards(isWin, difficulty, numberOfBoards, boardSize);
+      
+      if (isWin) setCoins(c => c + rewards.coins);
+      setExperience(e => e + rewards.xp);
+      
+      setWinner(isWin ? player1Name : player2Name);
       setShowWinnerModal(true);
       return;
     }
@@ -118,15 +107,40 @@ const App = () => {
     setCurrentPlayer(prev => prev === 1 ? 2 : 1);
   };
 
+  // AI Move Handler
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
-      const move = findBestMove(boards, difficulty, boardSize);
-      if (move) {
-        timeoutId = setTimeout(() => handleMove(move.boardIndex, move.cellIndex), 500);
-      }
+      const controller = new AbortController();
+
+      const processMove = async () => {
+        try {
+          const move = await Promise.race([
+            findBestMove(boards, difficulty, boardSize),
+            new Promise<null>(resolve => 
+              setTimeout(() => resolve(null), 2000)
+            )
+          ]);
+
+          if (controller.signal.aborted) return;
+
+          if (move) {
+            timeoutId = setTimeout(() => 
+              handleMove(move.boardIndex, move.cellIndex), 
+              500
+            );
+          }
+        } catch (err) {
+          console.error('AI processing error:', err);
+        }
+      };
+
+      processMove();
+      return () => {
+        controller.abort();
+        clearTimeout(timeoutId);
+      };
     }
-    return () => clearTimeout(timeoutId);
   }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
 
   const resetGame = (num: number, size: BoardSize) => {
@@ -141,10 +155,26 @@ const App = () => {
     setNumberOfBoards(Math.min(5, Math.max(1, num)));
     setBoardSize(size);
     setShowBoardConfig(false);
+    resetGame(num, size);
   };
+
+  const handleUndo = () => {
+    if (coins >= 100) {
+      setCoins(c => c - 100);
+      if (gameHistory.length > 2) {
+        setBoards(gameHistory[gameHistory.length - 3]);
+        setGameHistory(h => h.slice(0, -2));
+        setCurrentPlayer(1);
+      }
+    } else {
+      Alert.alert('Insufficient Coins', 'You need at least 100 coins to undo!');
+    }
+  };
+
   const handleResetNames = () => {
     setShowNameModal(true);
   };
+
   return (
     <View style={styles.container}>
       {gameMode ? (
@@ -153,13 +183,8 @@ const App = () => {
           boards={boards}
           makeMove={handleMove}
           isBoardDead={isBoardDead}
-          undoMove={() => {
-            if (gameHistory.length > 2) {
-              setBoards(gameHistory[gameHistory.length - 3]);
-              setGameHistory(gameHistory.slice(0, -2));
-              setCurrentPlayer(1);
-            }
-          }}
+          onUndo={handleUndo}
+          undoMove={handleUndo}
           resetGame={() => resetGame(numberOfBoards, boardSize)}
           exitToMenu={() => setGameMode(null)}
           gameMode={gameMode}
@@ -168,11 +193,10 @@ const App = () => {
           onBoardConfigPress={() => setShowBoardConfig(true)}
           difficulty={difficulty}
           onDifficultyPress={() => setShowDifficultyModal(true)}
-          onResetNames={handleResetNames}
-          onUndo={handleUndo}
           coins={coins}
           experience={experience}
           canUndo={coins >= 100}
+          onResetNames={handleResetNames}
         />
       ) : (
         <Menu
