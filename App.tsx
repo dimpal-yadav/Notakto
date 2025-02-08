@@ -99,7 +99,9 @@ const App = () => {
     setBoardSize(size);
     setShowBoardConfig(false);
   };
-
+  const handleResetNames = () => {
+    setShowNameModal(true);
+  };
   return (
     <View style={styles.container}>
       {gameMode ? (
@@ -123,6 +125,7 @@ const App = () => {
           onBoardConfigPress={() => setShowBoardConfig(true)}
           difficulty={difficulty}
           onDifficultyPress={() => setShowDifficultyModal(true)}
+          onResetNames={handleResetNames}
           
         />
       ) : (
@@ -148,6 +151,7 @@ const App = () => {
           setPlayer2Name(p2 || 'Player 2');
           setShowNameModal(false);
         }}
+        initialNames={[player1Name, player2Name]}
       />
       <WinnerModal
         visible={showWinnerModal}

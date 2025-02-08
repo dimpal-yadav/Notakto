@@ -5,12 +5,12 @@ import LinearGradient from 'react-native-linear-gradient';
 type PlayerNamesModalProps = {
   visible: boolean;
   onSubmit: (p1: string, p2: string) => void;
+  initialNames?: [string, string];
 };
 
-const PlayerNamesModal = ({ visible, onSubmit }: PlayerNamesModalProps) => {
-  const [player1, setPlayer1] = useState('Player 1');
-  const [player2, setPlayer2] = useState('Player 2');
-
+const PlayerNamesModal = ({ visible, onSubmit, initialNames }: PlayerNamesModalProps) => {
+  const [player1, setPlayer1] = useState(initialNames?.[0] || 'Player 1');
+  const [player2, setPlayer2] = useState(initialNames?.[1] || 'Player 2');
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>

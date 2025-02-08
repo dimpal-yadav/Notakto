@@ -6,9 +6,10 @@ type GameBoardProps = {
   boards: Array<Array<string>>;
   makeMove: (boardIndex: number, cellIndex: number) => void;
   isBoardDead: (board: Array<string>) => boolean;
+  boardSize: number;
 };
 
-export const GameBoard = ({ boards, makeMove, isBoardDead }: GameBoardProps) => (
+export const GameBoard = ({ boards, makeMove, isBoardDead, boardSize }: GameBoardProps) => (
   <View style={styles.boardsContainer}>
     {boards.map((_, index) => (
       <Board
@@ -17,6 +18,7 @@ export const GameBoard = ({ boards, makeMove, isBoardDead }: GameBoardProps) => 
         boardState={boards[index]}
         makeMove={makeMove}
         isDead={isBoardDead(boards[index])}
+        boardSize={boardSize}
       />
     ))}
   </View>

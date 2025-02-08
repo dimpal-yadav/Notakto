@@ -17,6 +17,7 @@ type GameProps = {
   difficulty?: number;
   onDifficultyPress?: () => void;
   boardSize: number;
+  onResetNames: () => void;
 };
 
 type AnimatedButtonProps = {
@@ -27,10 +28,10 @@ type AnimatedButtonProps = {
   width?: number;
 };
 
-const AnimatedButton = ({ 
-  colors, 
-  onPress, 
-  label, 
+const AnimatedButton = ({
+  colors,
+  onPress,
+  label,
   disabled = false,
   width
 }: AnimatedButtonProps) => {
@@ -55,8 +56,8 @@ const AnimatedButton = ({
 
   return (
     <Animated.View style={{ transform: [{ scale: scaleValue }], width }}>
-      <TouchableWithoutFeedback 
-        onPressIn={handlePressIn} 
+      <TouchableWithoutFeedback
+        onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         disabled={disabled}
       >
@@ -153,20 +154,27 @@ const Game = (props: GameProps) => {
               </TouchableWithoutFeedback>
             </Animated.View>
 
-            <Animated.View style={[styles.menuContainer, { 
+            <Animated.View style={[styles.menuContainer, {
               transform: [{ translateY: menuTranslateY }],
               opacity: menuAnimation,
             }]}>
               <LinearGradient colors={['#ffffff', '#f8f9fa']} style={styles.menuPanel}>
                 <View style={styles.menuContent}>
-                
+
                   <AnimatedButton
                     colors={['#34495E', '#2C3E50']}
                     onPress={props.onBoardConfigPress}
                     label={`Game Configuration`}
                     width={screenWidth * 0.8}
                   />
-                  
+                  {props.gameMode === 'vsPlayer' && (
+                    <AnimatedButton
+                      colors={['#FF6B6B', '#FF5252']}
+                      onPress={props.onResetNames}
+                      label="Reset Names"
+                      width={screenWidth * 0.8}
+                    />
+                  )}
                   {props.gameMode === 'vsComputer' && (
                     <AnimatedButton
                       colors={['#FFB347', '#FFCC33']}
@@ -181,15 +189,15 @@ const Game = (props: GameProps) => {
                     onPress={props.resetGame}
                     label="Reset"
                     width={screenWidth * 0.8}
+                  />
+                  {props.gameMode === 'vsComputer' && (
+                    <AnimatedButton
+                      colors={['#8E44AD', '#9B59B6']}
+                      onPress={props.onDifficultyPress!}
+                      label={`AI Level: ${props.difficulty}`}
+                      width={screenWidth * 0.8}
                     />
-                    {props.gameMode === 'vsComputer' && (
-                      <AnimatedButton
-                        colors={['#8E44AD', '#9B59B6']}
-                        onPress={props.onDifficultyPress!}
-                        label={`AI Level: ${props.difficulty}`}
-                        width={screenWidth * 0.8}
-                      />
-                    )}
+                  )}
 
                   <AnimatedButton
                     colors={['#00E1FF', '#0078FF']}
