@@ -61,3 +61,4 @@ export type BoardConfigModalProps = {
 
 export type DifficultyLevel = 1 | 2 | 3 | 4 | 5;
 
+export type BoardSize = 2 | 3 | 4 | 5;

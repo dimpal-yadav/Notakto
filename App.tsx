@@ -5,21 +5,19 @@ import Game from './components/Game';
 import TutorialModal from './components/modals/TutorialModal';
 import PlayerNamesModal from './components/modals/PlayerNamesModal';
 import WinnerModal from './components/modals/WinnerModal';
-import { BoardConfigModal } from './components/modals/BoardConfigModal';
+import BoardConfigModal from './components/modals/BoardConfigModal';
 import { DifficultyModal } from './components/modals/DifficultyModal';
-import type { BoardState, GameMode, DifficultyLevel} from './types';
 import { findBestMove } from './ai';
-
+import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './types';
 
 const App = () => {
   // Game State
-  const [boards, setBoards] = useState<BoardState[]>(
-    Array(3).fill(null).map(() => Array(9).fill(''))
-  );
+  const [boards, setBoards] = useState<BoardState[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [gameMode, setGameMode] = useState<GameMode>(null);
-  const [gameHistory, setGameHistory] = useState<BoardState[][]>([boards]);
+  const [gameHistory, setGameHistory] = useState<BoardState[][]>([]);
   const [numberOfBoards, setNumberOfBoards] = useState(3);
+  const [boardSize, setBoardSize] = useState<BoardSize>(3);
   const [showBoardConfig, setShowBoardConfig] = useState(false);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(1);
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
@@ -34,17 +32,22 @@ const App = () => {
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [winner, setWinner] = useState('');
 
+  useEffect(() => {
+    resetGame(numberOfBoards, boardSize);
+  }, [numberOfBoards, boardSize]);
 
-  // Game Logic
   const checkWin = (board: BoardState) => {
-    const winPatterns = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
-    ];
-    return winPatterns.some(pattern =>
-      pattern.every(index => board[index] === 'X')
-    );
+    const size = boardSize;
+    // Check rows and columns
+    for (let i = 0; i < size; i++) {
+      const row = board.slice(i * size, (i + 1) * size);
+      const col = Array.from({length: size}, (_, j) => board[i + j * size]);
+      if (row.every(c => c === 'X') || col.every(c => c === 'X')) return true;
+    }
+    // Check diagonals
+    const diag1 = Array.from({length: size}, (_, i) => board[i * (size + 1)]);
+    const diag2 = Array.from({length: size}, (_, i) => board[(i + 1) * (size - 1)]);
+    return diag1.every(c => c === 'X') || diag2.every(c => c === 'X');
   };
 
   const isBoardDead = (board: BoardState) => checkWin(board);
@@ -53,19 +56,18 @@ const App = () => {
     if (boards[boardIndex][cellIndex] !== '' || isBoardDead(boards[boardIndex])) return;
 
     const newBoards = boards.map((board, idx) =>
-      idx === boardIndex ?
-        [...board.slice(0, cellIndex), 'X', ...board.slice(cellIndex + 1)]
-        : [...board]
+      idx === boardIndex ? [
+        ...board.slice(0, cellIndex),
+        'X',
+        ...board.slice(cellIndex + 1)
+      ] : [...board]
     );
 
     setBoards(newBoards);
     setGameHistory([...gameHistory, newBoards]);
-    //playSound(moveSound!);
 
     if (newBoards.every(board => isBoardDead(board))) {
-      //playSound(gameEndSound!);
-      const winner = currentPlayer === 1 ? player2Name : player1Name;
-      setWinner(winner);
+      setWinner(currentPlayer === 1 ? player2Name : player1Name);
       setShowWinnerModal(true);
       return;
     }
@@ -74,32 +76,33 @@ const App = () => {
   };
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
-      const move = findBestMove(boards, difficulty);
+      const move = findBestMove(boards, difficulty, boardSize);
       if (move) {
-        setTimeout(() => handleMove(move.boardIndex, move.cellIndex), 500);
+        timeoutId = setTimeout(() => handleMove(move.boardIndex, move.cellIndex), 500);
       }
     }
-  }, [currentPlayer, gameMode, boards, difficulty]);
+    return () => clearTimeout(timeoutId);
+  }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
 
-  const resetGame = (num: number) => {
-    const initialBoards = Array(num).fill(null).map(() => Array(9).fill(''));
+  const resetGame = (num: number, size: BoardSize) => {
+    const initialBoards = Array(num).fill(null).map(() => Array(size * size).fill(''));
     setBoards(initialBoards);
     setCurrentPlayer(1);
     setGameHistory([initialBoards]);
     setShowWinnerModal(false);
   };
 
-  const handleBoardNumberChange = (num: number) => {
-    if (num > 0 && num <= 5) { // Limit to 5 boards max
-      setNumberOfBoards(num);
-      resetGame(num);
-      setShowBoardConfig(false);
-    }
+  const handleBoardConfigChange = (num: number, size: BoardSize) => {
+    setNumberOfBoards(Math.min(5, Math.max(1, num)));
+    setBoardSize(size);
+    setShowBoardConfig(false);
   };
+
   return (
     <View style={styles.container}>
-      {gameMode ? ( //display the game
+      {gameMode ? (
         <Game
           currentPlayer={currentPlayer === 1 ? player1Name : player2Name}
           boards={boards}
@@ -112,35 +115,32 @@ const App = () => {
               setCurrentPlayer(1);
             }
           }}
-          resetGame={() => resetGame(numberOfBoards)}
+          resetGame={() => resetGame(numberOfBoards, boardSize)}
           exitToMenu={() => setGameMode(null)}
           gameMode={gameMode}
           numberOfBoards={numberOfBoards}
+          boardSize={boardSize}
           onBoardConfigPress={() => setShowBoardConfig(true)}
           difficulty={difficulty}
-          onDifficultyPress={()=>setShowDifficultyModal(true)}
-          // onStatsPress={() => setShowStatsModal(true)}
+          onDifficultyPress={() => setShowDifficultyModal(true)}
+          
         />
-      ) : ( //no game mode selected yet
+      ) : (
         <Menu
           startGame={(mode) => {
             if (mode === 'vsPlayer') setShowNameModal(true);
-            if (mode === 'vsComputer') {
+            else {
               setPlayer1Name('You');
               setPlayer2Name('Computer');
             }
             setGameMode(mode);
-            resetGame(numberOfBoards);
+            resetGame(numberOfBoards, boardSize);
           }}
           showTutorial={() => setShowTutorial(true)}
         />
       )}
 
-      <TutorialModal
-        visible={showTutorial}
-        onClose={() => setShowTutorial(false)}
-      />
-
+      <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
       <PlayerNamesModal
         visible={showNameModal}
         onSubmit={(p1, p2) => {
@@ -149,32 +149,29 @@ const App = () => {
           setShowNameModal(false);
         }}
       />
-
       <WinnerModal
         visible={showWinnerModal}
         winner={winner}
         onPlayAgain={() => {
           setShowWinnerModal(false);
-          resetGame(numberOfBoards);
+          resetGame(numberOfBoards, boardSize);
         }}
         onMenu={() => {
           setShowWinnerModal(false);
           setGameMode(null);
         }}
       />
-
       <BoardConfigModal
         visible={showBoardConfig}
         currentBoards={numberOfBoards}
-        onConfirm={handleBoardNumberChange}
+        currentSize={boardSize}
+        onConfirm={handleBoardConfigChange}
         onCancel={() => setShowBoardConfig(false)}
       />
       <DifficultyModal
         visible={showDifficultyModal}
         onSelect={(level) => {
           setDifficulty(level as DifficultyLevel);
-          setGameMode('vsComputer');
-          resetGame(numberOfBoards);
           setShowDifficultyModal(false);
         }}
         onClose={() => setShowDifficultyModal(false)}
@@ -189,7 +186,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
 });
-
-
 
 export default App;

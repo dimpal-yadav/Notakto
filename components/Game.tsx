@@ -16,6 +16,7 @@ type GameProps = {
   onBoardConfigPress: () => void;
   difficulty?: number;
   onDifficultyPress?: () => void;
+  boardSize: number;
 };
 
 type AnimatedButtonProps = {
@@ -128,6 +129,7 @@ const Game = (props: GameProps) => {
               boardState={board}
               makeMove={props.makeMove}
               isDead={props.isBoardDead(board)}
+              boardSize={props.boardSize}
             />
           ))}
         </ScrollView>
@@ -160,7 +162,7 @@ const Game = (props: GameProps) => {
                   <AnimatedButton
                     colors={['#34495E', '#2C3E50']}
                     onPress={props.onBoardConfigPress}
-                    label={`Boards: ${props.numberOfBoards}`}
+                    label={`Game Configuration`}
                     width={screenWidth * 0.8}
                   />
                   

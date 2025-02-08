@@ -1,46 +1,64 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import type { BoardSize } from '../../types';
 
 type BoardConfigModalProps = {
   visible: boolean;
   currentBoards: number;
-  onConfirm: (num: number) => void;
+  currentSize: BoardSize;
+  onConfirm: (num: number, size: BoardSize) => void;
   onCancel: () => void;
 };
 
-export const BoardConfigModal = ({ 
+const BoardConfigModal = ({ 
   visible, 
   currentBoards,
+  currentSize,
   onConfirm,
   onCancel 
 }: BoardConfigModalProps) => {
-  const [inputValue, setInputValue] = useState(String(currentBoards));
+  const [selectedBoards, setSelectedBoards] = useState(currentBoards);
+  const [selectedSize, setSelectedSize] = useState<BoardSize>(currentSize);
 
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.title}>Number of Boards</Text>
+          <Text style={styles.title}>Game Configuration</Text>
           
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            value={inputValue}
-            onChangeText={setInputValue}
-            placeholder="Enter (1-5)"
-          />
+          <Text style={styles.sectionTitle}>Number of Boards (1-5)</Text>
+          <View style={styles.buttonGroup}>
+            {[1, 2, 3, 4, 5].map(num => (
+              <TouchableOpacity
+                key={num}
+                style={[styles.sizeButton, selectedBoards === num && styles.selected]}
+                onPress={() => setSelectedBoards(num)}
+              >
+                <Text style={styles.buttonText}>{num}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity 
-              style={[styles.button, styles.cancelButton]}
-              onPress={onCancel}
-            >
+          <Text style={styles.sectionTitle}>Board Size</Text>
+          <View style={styles.buttonGroup}>
+            {([2, 3, 4, 5] as BoardSize[]).map(size => (
+              <TouchableOpacity
+                key={size}
+                style={[styles.sizeButton, selectedSize === size && styles.selected]}
+                onPress={() => setSelectedSize(size)}
+              >
+                <Text style={styles.buttonText}>{size}x{size}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.footer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
-            
             <TouchableOpacity 
-              style={styles.button}
-              onPress={() => onConfirm(Number(inputValue))}
+              style={styles.confirmButton}
+              onPress={() => onConfirm(selectedBoards, selectedSize)}
             >
               <Text style={styles.buttonText}>Apply</Text>
             </TouchableOpacity>
@@ -62,41 +80,59 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: '90%',
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 12,
-    marginBottom: 15,
+  sectionTitle: {
     fontSize: 16,
-    textAlign: 'center',
+    fontWeight: '600',
+    marginVertical: 10,
   },
-  buttonRow: {
+  buttonGroup: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 15,
+  },
+  sizeButton: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#e0e0e0',
+    minWidth: 60,
+    alignItems: 'center',
+  },
+  selected: {
+    backgroundColor: '#4a90e2',
+  },
+  buttonText: {
+    color: '#333',
+    fontWeight: '500',
+  },
+  footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 10,
-  },
-  button: {
-    flex: 1,
-    backgroundColor: '#4a90e2',
-    padding: 12,
-    borderRadius: 5,
-    alignItems: 'center',
+    marginTop: 15,
   },
   cancelButton: {
     backgroundColor: '#666',
+    padding: 12,
+    borderRadius: 8,
+    flex: 1,
+    marginRight: 8,
+    alignItems: 'center',
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+  confirmButton: {
+    backgroundColor: '#4a90e2',
+    padding: 12,
+    borderRadius: 8,
+    flex: 1,
+    alignItems: 'center',
   },
 });
+
+export default BoardConfigModal;

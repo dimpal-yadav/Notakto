@@ -1,59 +1,40 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Cell from './Cell';
+import type { BoardState } from '../types';
 
 type BoardProps = {
   boardIndex: number;
-  boardState: string[];
+  boardState: BoardState;
   makeMove: (boardIndex: number, cellIndex: number) => void;
   isDead: boolean;
+  boardSize: number;
 };
 
-const Board = ({
-  boardIndex,
-  boardState,
-  makeMove,
-  isDead,
-}: BoardProps) => (
-  <View style={[styles.board, isDead && styles.deadBoard]}>
-    <View style={styles.row}>
-      {[0, 1, 2].map((cellIndex) => (
-        <Cell
-          key={cellIndex}
-          boardIndex={boardIndex}
-          cellIndex={cellIndex}
-          value={boardState[cellIndex]}
-          onPress={makeMove}
-          disabled={isDead}
-        />
+const Board = ({ boardIndex, boardState, makeMove, isDead, boardSize }: BoardProps) => {
+  return (
+    <View style={[styles.board, isDead && styles.deadBoard]}>
+      {Array.from({ length: boardSize }).map((_, row) => (
+        <View key={row} style={styles.row}>
+          {Array.from({ length: boardSize }).map((_, col) => {
+            const cellIndex = row * boardSize + col;
+            return (
+              <Cell
+                key={cellIndex}
+                boardIndex={boardIndex}
+                cellIndex={cellIndex}
+                value={boardState[cellIndex]}
+                onPress={makeMove}
+                disabled={isDead}
+                boardSize={boardSize}
+              />
+            );
+          })}
+        </View>
       ))}
     </View>
-    <View style={styles.row}>
-      {[3, 4, 5].map((cellIndex) => (
-        <Cell
-          key={cellIndex}
-          boardIndex={boardIndex}
-          cellIndex={cellIndex}
-          value={boardState[cellIndex]}
-          onPress={makeMove}
-          disabled={isDead}
-        />
-      ))}
-    </View>
-    <View style={styles.row}>
-      {[6, 7, 8].map((cellIndex) => (
-        <Cell
-          key={cellIndex}
-          boardIndex={boardIndex}
-          cellIndex={cellIndex}
-          value={boardState[cellIndex]}
-          onPress={makeMove}
-          disabled={isDead}
-        />
-      ))}
-    </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   board: {
