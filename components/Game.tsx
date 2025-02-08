@@ -22,6 +22,7 @@ type GameProps = {
   coins: number;
   experience: number;
   canUndo: boolean;
+  gameHistoryLength: number;
 };
 
 type AnimatedButtonProps = {

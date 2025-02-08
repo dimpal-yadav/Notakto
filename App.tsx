@@ -80,7 +80,7 @@ const App = () => {
 
   const handleMove = (boardIndex: number, cellIndex: number) => {
     if (boards[boardIndex][cellIndex] !== '' || isBoardDead(boards[boardIndex])) return;
-
+  
     const newBoards = boards.map((board, idx) =>
       idx === boardIndex ? [
         ...board.slice(0, cellIndex),
@@ -88,25 +88,32 @@ const App = () => {
         ...board.slice(cellIndex + 1)
       ] : [...board]
     );
-
+  
     setBoards(newBoards);
     setGameHistory([...gameHistory, newBoards]);
-
+  
     if (newBoards.every(board => isBoardDead(board))) {
-      const isWin = currentPlayer === 1;
-      const rewards = calculateRewards(isWin, difficulty, numberOfBoards, boardSize);
+      // The current player just made the losing move
+      const loser = currentPlayer;
+      // Winner is the opposite player
+      const winner = loser === 1 ? 2 : 1;
       
-      if (isWin) setCoins(c => c + rewards.coins);
+      // Calculate rewards (only relevant for vsComputer mode)
+      const isHumanWinner = gameMode === 'vsComputer' && winner === 1;
+      const rewards = calculateRewards(isHumanWinner, difficulty, numberOfBoards, boardSize);
+  
+      if (isHumanWinner) setCoins(c => c + rewards.coins);
       setExperience(e => e + rewards.xp);
-      
-      setWinner(isWin ? player1Name : player2Name);
+  
+      // Set winner name based on player numbers
+      const winnerName = winner === 1 ? player1Name : player2Name;
+      setWinner(winnerName);
       setShowWinnerModal(true);
       return;
     }
-
+  
     setCurrentPlayer(prev => prev === 1 ? 2 : 1);
   };
-
   // AI Move Handler
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -157,17 +164,19 @@ const App = () => {
     setShowBoardConfig(false);
     resetGame(num, size);
   };
-
   const handleUndo = () => {
-    if (coins >= 100) {
-      setCoins(c => c - 100);
-      if (gameHistory.length > 2) {
-        setBoards(gameHistory[gameHistory.length - 3]);
-        setGameHistory(h => h.slice(0, -2));
-        setCurrentPlayer(1);
+    // Check if there are moves to undo (gameHistory has more than initial state)
+    if (gameHistory.length > 1) {
+      if (coins >= 100) {
+        setCoins(c => c - 100);
+        setBoards(gameHistory[gameHistory.length - 2]);
+        setGameHistory(h => h.slice(0, -1));
+        setCurrentPlayer(prev => prev === 1 ? 2 : 1);
+      } else {
+        Alert.alert('Insufficient Coins', 'You need at least 100 coins to undo!');
       }
     } else {
-      Alert.alert('Insufficient Coins', 'You need at least 100 coins to undo!');
+      Alert.alert('No Moves', 'There are no moves to undo!');
     }
   };
 
@@ -197,6 +206,7 @@ const App = () => {
           experience={experience}
           canUndo={coins >= 100}
           onResetNames={handleResetNames}
+          gameHistoryLength={gameHistory.length}
         />
       ) : (
         <Menu
