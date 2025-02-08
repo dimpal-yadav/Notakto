@@ -18,6 +18,10 @@ type GameProps = {
   onDifficultyPress?: () => void;
   boardSize: number;
   onResetNames: () => void;
+  onUndo: () => void;
+  coins: number;
+  experience: number;
+  canUndo: boolean;
 };
 
 type AnimatedButtonProps = {
@@ -120,8 +124,13 @@ const Game = (props: GameProps) => {
   return (
     <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>
       <View style={styles.container}>
-        <Text style={styles.header}>Current Player: {props.currentPlayer}</Text>
-
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>Current Player: {props.currentPlayer}</Text>
+          <View style={styles.economyInfo}>
+            <Text style={styles.economyText}>Coins: {props.coins}</Text>
+            <Text style={styles.economyText}>XP: {props.experience}</Text>
+          </View>
+        </View>
         <ScrollView contentContainerStyle={styles.boardsContainer}>
           {props.boards.map((board: string[], index: number) => (
             <Board
@@ -177,9 +186,10 @@ const Game = (props: GameProps) => {
                   )}
                   {props.gameMode === 'vsComputer' && (
                     <AnimatedButton
-                      colors={['#FFB347', '#FFCC33']}
-                      onPress={props.undoMove}
-                      label="Undo"
+                      colors={['#34495E', '#2C3E50']}
+                      onPress={props.onUndo}
+                      label="Undo (100 coins)"
+                      disabled={!props.canUndo}
                       width={screenWidth * 0.8}
                     />
                   )}
@@ -228,6 +238,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  economyInfo: {
+    alignItems: 'flex-end',
+  },
+  economyText: {
+    fontSize: 16,
+    color: '#4A4A4A',
   },
   header: {
     fontSize: 28,

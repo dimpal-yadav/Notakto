@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import Menu from './components/Menu';
 import Game from './components/Game';
 import TutorialModal from './components/modals/TutorialModal';
@@ -9,6 +9,7 @@ import BoardConfigModal from './components/modals/BoardConfigModal';
 import { DifficultyModal } from './components/modals/DifficultyModal';
 import { findBestMove } from './ai';
 import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './types';
+import { loadEconomy, saveEconomy, calculateRewards } from './economyUtils';
 
 const App = () => {
   // Game State
@@ -31,22 +32,64 @@ const App = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [winner, setWinner] = useState('');
+  const [coins, setCoins] = useState(1000);
+  const [experience, setExperience] = useState(0);
+
+  // Load economy data on mount
+  useEffect(() => {
+    const loadInitialEconomy = async () => {
+      const { coins: savedCoins, experience: savedXP } = await loadEconomy();
+      setCoins(savedCoins);
+      setExperience(savedXP);
+    };
+    loadInitialEconomy();
+  }, []);
+
+  // Save economy data when changed
+  useEffect(() => {
+    saveEconomy(coins, experience);
+  }, [coins, experience]);
+
+  // Update the winner effect
+  useEffect(() => {
+    if (showWinnerModal) {
+      const isWin = winner === (gameMode === 'vsComputer' ? player1Name : player2Name);
+      const rewards = calculateRewards(isWin, difficulty, numberOfBoards, boardSize);
+
+      if (isWin) {
+        setCoins(prev => prev + rewards.coins);
+      }
+      setExperience(prev => prev + rewards.xp);
+    }
+  }, [showWinnerModal]);
 
   useEffect(() => {
     resetGame(numberOfBoards, boardSize);
   }, [numberOfBoards, boardSize]);
+  const handleUndo = () => {
+    if (coins >= 100) {
+      setCoins(prev => prev - 100);
+      if (gameHistory.length > 2) {
+        setBoards(gameHistory[gameHistory.length - 3]);
+        setGameHistory(gameHistory.slice(0, -2));
+        setCurrentPlayer(1);
+      }
+    } else {
+      Alert.alert('Not enough coins', 'You need at least 100 coins to undo!');
+    }
+  };
 
   const checkWin = (board: BoardState) => {
     const size = boardSize;
     // Check rows and columns
     for (let i = 0; i < size; i++) {
       const row = board.slice(i * size, (i + 1) * size);
-      const col = Array.from({length: size}, (_, j) => board[i + j * size]);
+      const col = Array.from({ length: size }, (_, j) => board[i + j * size]);
       if (row.every(c => c === 'X') || col.every(c => c === 'X')) return true;
     }
     // Check diagonals
-    const diag1 = Array.from({length: size}, (_, i) => board[i * (size + 1)]);
-    const diag2 = Array.from({length: size}, (_, i) => board[(i + 1) * (size - 1)]);
+    const diag1 = Array.from({ length: size }, (_, i) => board[i * (size + 1)]);
+    const diag2 = Array.from({ length: size }, (_, i) => board[(i + 1) * (size - 1)]);
     return diag1.every(c => c === 'X') || diag2.every(c => c === 'X');
   };
 
@@ -126,7 +169,10 @@ const App = () => {
           difficulty={difficulty}
           onDifficultyPress={() => setShowDifficultyModal(true)}
           onResetNames={handleResetNames}
-          
+          onUndo={handleUndo}
+          coins={coins}
+          experience={experience}
+          canUndo={coins >= 100}
         />
       ) : (
         <Menu
