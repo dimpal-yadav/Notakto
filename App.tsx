@@ -41,12 +41,16 @@ const App = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const { coins: savedCoins, experience: savedXP } = await loadEconomy();
-        setCoins(savedCoins);
-        setExperience(savedXP);
+        const economyData = await loadEconomy();
+        setCoins(economyData.coins);
+        setExperience(economyData.experience);
         resetGame(numberOfBoards, boardSize);
       } catch (error) {
         console.error('Failed to load data:', error);
+        // Initialize with default values if load fails
+        setCoins(1000);
+        setExperience(0);
+        resetGame(numberOfBoards, boardSize);
       }
     };
     loadData();

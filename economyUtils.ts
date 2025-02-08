@@ -6,16 +6,20 @@ const XP_KEY = '@GameExperience';
 
 export const loadEconomy = async () => {
   try {
-    const coins = await AsyncStorage.getItem(COINS_KEY) || '1000';
-    const xp = await AsyncStorage.getItem(XP_KEY) || '0';
+    const [coins, xp] = await Promise.all([
+      AsyncStorage.getItem(COINS_KEY),
+      AsyncStorage.getItem(XP_KEY)
+    ]);
+    
     return {
-      coins: parseInt(coins),
-      experience: parseInt(xp)
+      coins: coins ? parseInt(coins) : 1000,
+      experience: xp ? parseInt(xp) : 0
     };
   } catch (e) {
     return { coins: 1000, experience: 0 };
   }
 };
+
 
 export const saveEconomy = async (coins: number, experience: number) => {
   try {
@@ -35,9 +39,10 @@ export const calculateRewards = (
   boardSize: BoardSize
 ) => {
   const baseMultiplier = difficulty * numberOfBoards * boardSize;
-  
+  const coinMultiplier=Math.trunc(Math.random()*5)+1;
+  const xpMultiplier=Math.trunc(Math.random()*5)+6;
   return {
-    coins: isWin ? baseMultiplier * 10 : 0,
-    xp: isWin ? baseMultiplier * 100 : baseMultiplier * 30
+    coins: isWin ? baseMultiplier * coinMultiplier : 0,
+    xp: isWin ? baseMultiplier* xpMultiplier : baseMultiplier 
   };
 };
