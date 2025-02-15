@@ -120,37 +120,9 @@ const App = () => {
   };
   // AI Move Handler
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
-      const controller = new AbortController();
-
-      const processMove = async () => {
-        try {
-          const move = await Promise.race([
-            findBestMove(boards, difficulty, boardSize),
-            new Promise<null>(resolve =>
-              setTimeout(() => resolve(null), 2000)
-            )
-          ]);
-
-          if (controller.signal.aborted) return;
-
-          if (move) {
-            timeoutId = setTimeout(() =>
-              handleMove(move.boardIndex, move.cellIndex),
-              500
-            );
-          }
-        } catch (err) {
-          console.error('AI processing error:', err);
-        }
-      };
-
-      processMove();
-      return () => {
-        controller.abort();
-        clearTimeout(timeoutId);
-      };
+      const move = findBestMove(boards, difficulty, boardSize)
+      if (move) {handleMove(move.boardIndex, move.cellIndex);}
     }
   }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
 
@@ -169,13 +141,11 @@ const App = () => {
     resetGame(num, size);
   };
   const handleUndo = () => {
-    // Check if there are moves to undo (gameHistory has more than initial state)
-    if (gameHistory.length > 1) {
+    if (gameHistory.length >= 3) {
       if (coins >= 100) {
         setCoins(c => c - 100);
-        setBoards(gameHistory[gameHistory.length - 2]);
-        setGameHistory(h => h.slice(0, -1));
-        setCurrentPlayer(prev => prev === 1 ? 2 : 1);
+        setBoards(gameHistory[gameHistory.length - 3]);
+        setGameHistory(h => h.slice(0, -2));
       } else {
         Alert.alert('Insufficient Coins', 'You need at least 100 coins to undo!');
       }
@@ -183,6 +153,7 @@ const App = () => {
       Alert.alert('No Moves', 'There are no moves to undo!');
     }
   };
+  
   const handleSkip = () => {
     if (coins >= 200) {
       setCoins(c => c - 200);
