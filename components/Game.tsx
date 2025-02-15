@@ -19,6 +19,7 @@ type GameProps = {
   boardSize: number;
   onResetNames: () => void;
   onUndo: () => void;
+  onSkip: () => void;
   coins: number;
   experience: number;
   canUndo: boolean;
@@ -190,14 +191,22 @@ const Game = (props: GameProps) => {
                   )}
                   {props.gameMode === 'vsComputer' && (
                     <AnimatedButton
-                      colors={['#34495E', '#2C3E50']}
+                      colors={['#8B4513', '#A0522D']} //['#FFD700', '#FFA500'] for yellow
                       onPress={props.onUndo}
                       label="Undo (100 coins)"
                       disabled={!props.canUndo}
                       width={screenWidth * 0.8}
                     />
                   )}
-
+                  {props.gameMode === 'vsComputer' && (
+                    <AnimatedButton
+                      colors={['#FFD700', '#FFA500']} // for yellow
+                      onPress={props.onSkip}
+                      label="Skip a Move (200 coins)"
+                      disabled={!props.canUndo}
+                      width={screenWidth * 0.8}
+                    />
+                  )}
                   <AnimatedButton
                     colors={['#FF66B2', '#FF1493']}
                     onPress={props.resetGame}
@@ -220,7 +229,7 @@ const Game = (props: GameProps) => {
                     width={screenWidth * 0.8}
                   />
                   <AnimatedButton
-                    colors={['#34495E', '#2C3E50']}
+                    colors={['#7ED321', '#417505']}
                     onPress={closeMenu}
                     label={`Return to Game`}
                     width={screenWidth * 0.8}
