@@ -241,6 +241,7 @@ const App = () => {
         onSelect={(level) => {
           setDifficulty(level as DifficultyLevel);
           setShowDifficultyModal(false);
+          resetGame(numberOfBoards, boardSize);
         }}
         onClose={() => setShowDifficultyModal(false)}
       />
