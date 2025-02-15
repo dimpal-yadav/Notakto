@@ -23,6 +23,7 @@ type GameProps = {
   coins: number;
   experience: number;
   canUndo: boolean;
+  canSkip: boolean;
   gameHistoryLength: number;
 };
 
@@ -203,7 +204,7 @@ const Game = (props: GameProps) => {
                       colors={['#FFD700', '#FFA500']} // for yellow
                       onPress={props.onSkip}
                       label="Skip a Move (200 coins)"
-                      disabled={!props.canUndo}
+                      disabled={!props.canSkip}
                       width={screenWidth * 0.8}
                     />
                   )}

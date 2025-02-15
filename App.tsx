@@ -104,11 +104,16 @@ const App = () => {
 
       // Calculate rewards (only relevant for vsComputer mode)
       const isHumanWinner = gameMode === 'vsComputer' && winner === 1;
+      const isComputerWinner = gameMode === 'vsComputer' && winner === 2;
       const rewards = calculateRewards(isHumanWinner, difficulty, numberOfBoards, boardSize);
 
-      if (isHumanWinner) setCoins(c => c + rewards.coins);
-      setExperience(e => e + rewards.xp);
-
+      if (isHumanWinner){ 
+        setCoins(c => c + rewards.coins);
+        setExperience(e => e + rewards.xp);
+      }
+      if(isComputerWinner){
+        setExperience(e => Math.round( e + rewards.xp * 0.25 ));
+      }
       // Set winner name based on player numbers
       const winnerName = winner === 1 ? player1Name : player2Name;
       setWinner(winnerName);
@@ -191,6 +196,7 @@ const App = () => {
           onResetNames={handleResetNames}
           gameHistoryLength={gameHistory.length}
           onSkip={handleSkip}
+          canSkip={coins>=200}
         />
       ) : (
         <Menu
