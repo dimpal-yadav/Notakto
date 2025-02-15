@@ -215,7 +215,7 @@ const Game = (props: GameProps) => {
                   />
                   {props.gameMode === 'vsComputer' && (
                     <AnimatedButton
-                      colors={['#8E44AD', '#9B59B6']}
+                      colors={['#FFA500', '#FF4500']}
                       onPress={props.onDifficultyPress!}
                       label={`AI Level: ${props.difficulty}`}
                       width={screenWidth * 0.8}

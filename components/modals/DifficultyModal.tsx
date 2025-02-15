@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 type DifficultyModalProps = {
   visible: boolean;
@@ -10,7 +11,7 @@ type DifficultyModalProps = {
 export const DifficultyModal = ({ visible, onSelect, onClose }: DifficultyModalProps) => (
   <Modal visible={visible} transparent animationType="slide">
     <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
+      <LinearGradient colors={['#DA70D6', '#7B68EE']} style={styles.modalContent}>
         <Text style={styles.title}>Select Difficulty</Text>
         
         {[1, 2, 3, 4, 5].map(level => (
@@ -26,9 +27,9 @@ export const DifficultyModal = ({ visible, onSelect, onClose }: DifficultyModalP
         ))}
         
         <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
-      </View>
+      </LinearGradient>
     </View>
   </Modal>
 );
@@ -51,7 +52,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     modalContent: {
-      backgroundColor: 'white',
       padding: 20,
       borderRadius: 10,
       width: '90%',
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 22,
       fontWeight: 'bold',
-      color: '#333',
+      color: 'white',
       marginBottom: 20,
       textAlign: 'center',
     },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
       padding: 15,
       borderRadius: 8,
       marginVertical: 5,
-      backgroundColor: '#4a90e2',
+      backgroundColor: '#c4a2d4',
     },
     difficultyButton: {
       backgroundColor: '#e1e1e1', // Base color will be overridden
@@ -79,11 +79,18 @@ const styles = StyleSheet.create({
       fontWeight: '600',
       textAlign: 'center',
     },
+    cancelText:{
+      color: '#c4a2d4',
+      fontSize: 16,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
     cancelButton: {
       marginTop: 15,
-      backgroundColor: '#666',
+      backgroundColor: 'white',
       padding: 12,
       borderRadius: 8,
+      color: 'black'
     },
     difficultyText: {
       color: '#333',

@@ -12,7 +12,7 @@ type WinnerModalProps = {
 const WinnerModal = ({ visible, winner, onPlayAgain, onMenu }: WinnerModalProps) => (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
-        <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalContent}>
+        <LinearGradient colors={['#DA70D6', '#7B68EE']} style={styles.modalContent}>
           <Text style={styles.modalTitle}>Game Over!</Text>
           <Text style={styles.winnerText}>{(winner=='You')?(`You won!`):(`${winner} wins`)}</Text>
           <View style={styles.buttonContainer}>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import type { BoardSize } from '../../types';
+import LinearGradient from 'react-native-linear-gradient';
 
 type BoardConfigModalProps = {
   visible: boolean;
@@ -23,7 +24,7 @@ const BoardConfigModal = ({
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+        <LinearGradient colors={['#DA70D6', '#7B68EE']} style={styles.modalContent}>
           <Text style={styles.title}>Game Configuration</Text>
           
           <Text style={styles.sectionTitle}>Number of Boards (1-5)</Text>
@@ -63,7 +64,7 @@ const BoardConfigModal = ({
               <Text style={styles.buttonText}>Apply</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </LinearGradient>
       </View>
     </Modal>
   );
@@ -87,11 +88,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
+    color: 'white'
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginVertical: 10,
+    color: 'white'
   },
   buttonGroup: {
     flexDirection: 'row',
@@ -107,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selected: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#c4a2d4'
   },
   buttonText: {
     color: '#333',
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   cancelButton: {
-    backgroundColor: '#666',
+    backgroundColor: '#c4a2d4',
     padding: 12,
     borderRadius: 8,
     flex: 1,
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#c4a2d4',
     padding: 12,
     borderRadius: 8,
     flex: 1,
