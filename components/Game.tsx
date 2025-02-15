@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, Animated, Easing, TouchableWithoutFeedback } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Board from './Board';
 
@@ -27,102 +27,13 @@ type GameProps = {
   gameHistoryLength: number;
 };
 
-type AnimatedButtonProps = {
-  colors: string[];
-  onPress: () => void;
-  label: string;
-  disabled?: boolean;
-  width?: number;
-};
-
-const AnimatedButton = ({
-  colors,
-  onPress,
-  label,
-  disabled = false,
-  width
-}: AnimatedButtonProps) => {
-  const scaleValue = useRef(new Animated.Value(1)).current;
-
-  const handlePressIn = () => {
-    Animated.spring(scaleValue, {
-      toValue: 0.95,
-      useNativeDriver: true,
-      friction: 3,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(scaleValue, {
-      toValue: 1,
-      useNativeDriver: true,
-      friction: 3,
-    }).start();
-    if (!disabled) onPress();
-  };
-
-  return (
-    <Animated.View style={{ transform: [{ scale: scaleValue }], width }}>
-      <TouchableWithoutFeedback
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        disabled={disabled}
-      >
-        <LinearGradient
-          colors={colors}
-          style={[styles.menuButton, disabled && styles.disabledButton]}
-        >
-          <Text style={styles.menuButtonText}>{label}</Text>
-        </LinearGradient>
-      </TouchableWithoutFeedback>
-    </Animated.View>
-  );
-};
-
 const Game = (props: GameProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuAnimation = useRef(new Animated.Value(0)).current;
-  const overlayOpacity = useRef(new Animated.Value(0)).current;
   const { width: screenWidth } = Dimensions.get('window');
 
   const toggleMenu = () => {
-    Animated.parallel([
-      Animated.timing(menuAnimation, {
-        toValue: isMenuOpen ? 0 : 1,
-        duration: 300,
-        easing: Easing.inOut(Easing.ease),
-        useNativeDriver: true,
-      }),
-      Animated.timing(overlayOpacity, {
-        toValue: isMenuOpen ? 0 : 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      if (!isMenuOpen) setIsMenuOpen(true);
-    });
+    setIsMenuOpen(!isMenuOpen);
   };
-
-  const closeMenu = () => {
-    Animated.parallel([
-      Animated.timing(menuAnimation, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.inOut(Easing.ease),
-        useNativeDriver: true,
-      }),
-      Animated.timing(overlayOpacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => setIsMenuOpen(false));
-  };
-
-  const menuTranslateY = menuAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [300, 0],
-  });
 
   return (
     <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>
@@ -151,94 +62,55 @@ const Game = (props: GameProps) => {
         </ScrollView>
 
         {/* Footer Settings Button */}
-        <View style={styles.footer}>
-          <AnimatedButton
-            colors={['#8E44AD', '#9B59B6']}
-            onPress={toggleMenu}
-            label="Game Settings ⚙️"
-            width={screenWidth * 0.9}
-          />
-        </View>
+        <LinearGradient colors={['#8E44AD', '#9B59B6']} style={styles.footer}>  
+          <TouchableOpacity onPress={toggleMenu}>
+            <Text style={styles.footerText}>Game Settings ⚙️</Text>
+          </TouchableOpacity>
+        </LinearGradient>
 
-        {/* Overlay and Menu */}
+        {/* Menu */}
         {isMenuOpen && (
-          <>
-            <Animated.View style={[styles.overlay, { opacity: overlayOpacity }]}>
-              <TouchableWithoutFeedback onPress={closeMenu}>
-                <View style={styles.overlayBackground} />
-              </TouchableWithoutFeedback>
-            </Animated.View>
-
-            <Animated.View style={[styles.menuContainer, {
-              transform: [{ translateY: menuTranslateY }],
-              opacity: menuAnimation,
-            }]}>
-              <LinearGradient colors={['#ffffff', '#f8f9fa']} style={styles.menuPanel}>
-                <View style={styles.menuContent}>
-
-                  <AnimatedButton
-                    colors={['#34495E', '#2C3E50']}
-                    onPress={props.onBoardConfigPress}
-                    label={`Game Configuration`}
-                    width={screenWidth * 0.8}
-                  />
-                  {props.gameMode === 'vsPlayer' && (
-                    <AnimatedButton
-                      colors={['#FF6B6B', '#FF5252']}
-                      onPress={props.onResetNames}
-                      label="Reset Names"
-                      width={screenWidth * 0.8}
-                    />
-                  )}
-                  {props.gameMode === 'vsComputer' && (
-                    <AnimatedButton
-                      colors={['#8B4513', '#A0522D']} //['#FFD700', '#FFA500'] for yellow
-                      onPress={props.onUndo}
-                      label="Undo (100 coins)"
-                      disabled={!props.canUndo}
-                      width={screenWidth * 0.8}
-                    />
-                  )}
-                  {props.gameMode === 'vsComputer' && (
-                    <AnimatedButton
-                      colors={['#FFD700', '#FFA500']} // for yellow
-                      onPress={props.onSkip}
-                      label="Skip a Move (200 coins)"
-                      disabled={!props.canSkip}
-                      width={screenWidth * 0.8}
-                    />
-                  )}
-                  <AnimatedButton
-                    colors={['#FF66B2', '#FF1493']}
-                    onPress={props.resetGame}
-                    label="Reset"
-                    width={screenWidth * 0.8}
-                  />
-                  {props.gameMode === 'vsComputer' && (
-                    <AnimatedButton
-                      colors={['#FFA500', '#FF4500']}
-                      onPress={props.onDifficultyPress!}
-                      label={`AI Level: ${props.difficulty}`}
-                      width={screenWidth * 0.8}
-                    />
-                  )}
-
-                  <AnimatedButton
-                    colors={['#00E1FF', '#0078FF']}
-                    onPress={props.exitToMenu}
-                    label="Main Menu"
-                    width={screenWidth * 0.8}
-                  />
-                  <AnimatedButton
-                    colors={['#7ED321', '#417505']}
-                    onPress={closeMenu}
-                    label={`Return to Game`}
-                    width={screenWidth * 0.8}
-                  />
-                </View>
-              </LinearGradient>
-            </Animated.View>
-          </>
+          <View style={styles.overlay}>
+            <TouchableWithoutFeedback onPress={toggleMenu}>
+              <View style={styles.overlayBackground} />
+            </TouchableWithoutFeedback>
+            <LinearGradient colors={['#ffffff', '#f8f9fa']} style={styles.menuPanel}>
+              <View style={styles.menuContent}>
+                <TouchableOpacity onPress={props.onBoardConfigPress} style={styles.menuButton}>
+                  <Text style={styles.menuButtonText}>Game Configuration</Text>
+                </TouchableOpacity>
+                {props.gameMode === 'vsPlayer' && (
+                  <TouchableOpacity onPress={props.onResetNames} style={styles.menuButton}>
+                    <Text style={styles.menuButtonText}>Reset Names</Text>
+                  </TouchableOpacity>
+                )}
+                {props.gameMode === 'vsComputer' && (
+                  <TouchableOpacity onPress={props.onUndo} style={[styles.menuButton, !props.canUndo && styles.disabledButton]} disabled={!props.canUndo}>
+                    <Text style={styles.menuButtonText}>Undo (100 coins)</Text>
+                  </TouchableOpacity>
+                )}
+                {props.gameMode === 'vsComputer' && (
+                  <TouchableOpacity onPress={props.onSkip} style={[styles.menuButton, !props.canSkip && styles.disabledButton]} disabled={!props.canSkip}>
+                    <Text style={styles.menuButtonText}>Skip a Move (200 coins)</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity onPress={props.resetGame} style={styles.menuButton}>
+                  <Text style={styles.menuButtonText}>Reset</Text>
+                </TouchableOpacity>
+                {props.gameMode === 'vsComputer' && (
+                  <TouchableOpacity onPress={props.onDifficultyPress!} style={styles.menuButton}>
+                    <Text style={styles.menuButtonText}>AI Level: {props.difficulty}</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity onPress={props.exitToMenu} style={styles.menuButton}>
+                  <Text style={styles.menuButtonText}>Main Menu</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={toggleMenu} style={styles.menuButton}>
+                  <Text style={styles.menuButtonText}>Return to Game</Text>
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
         )}
       </View>
     </LinearGradient>
@@ -272,15 +144,12 @@ const styles = StyleSheet.create({
     color: '#4A4A4A',
     marginBottom: 20,
     textAlign: 'center',
-    textShadowColor: '#FFCC00',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
   },
   boardsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   footer: {
     position: 'relative',
@@ -288,60 +157,44 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
-    paddingHorizontal: 16,
-    zIndex: 1,
-    marginTop: 0
+    paddingVertical: 18,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+  },
+  footerText:{
+    fontSize: 18,
+    color: 'white'
   },
   menuButton: {
     paddingVertical: 18,
     paddingHorizontal: 25,
     borderRadius: 25,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
+    backgroundColor: '#8E44AD',
   },
   menuButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  disabledButton: {
-    opacity: 0.6,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.3)',
-    zIndex: 2,
   },
   overlayBackground: {
     flex: 1,
-  },
-  menuContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 3,
   },
   menuPanel: {
     margin: 20,
     borderRadius: 20,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 5,
   },
   menuContent: {
     paddingHorizontal: 8,
     gap: 12,
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });
 
