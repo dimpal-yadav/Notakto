@@ -97,12 +97,8 @@ const App = () => {
     setGameHistory([...gameHistory, newBoards]);
 
     if (newBoards.every(board => isBoardDead(board))) {
-      // The current player just made the losing move
       const loser = currentPlayer;
-      // Winner is the opposite player
       const winner = loser === 1 ? 2 : 1;
-
-      // Calculate rewards (only relevant for vsComputer mode)
       const isHumanWinner = gameMode === 'vsComputer' && winner === 1;
       const isComputerWinner = gameMode === 'vsComputer' && winner === 2;
       const rewards = calculateRewards(isHumanWinner, difficulty, numberOfBoards, boardSize);
@@ -114,7 +110,6 @@ const App = () => {
       if(isComputerWinner){
         setExperience(e => Math.round( e + rewards.xp * 0.25 ));
       }
-      // Set winner name based on player numbers
       const winnerName = winner === 1 ? player1Name : player2Name;
       setWinner(winnerName);
       setShowWinnerModal(true);
