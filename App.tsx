@@ -10,8 +10,16 @@ import { DifficultyModal } from './components/modals/DifficultyModal';
 import { findBestMove } from './ai';
 import { loadEconomy, saveEconomy, calculateRewards } from './economyUtils';
 import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './types';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+GoogleSignin.configure({
+  webClientId: '200189691429-6if4geqfh2dvnuqp5bev5oa7mnjove4q.apps.googleusercontent.com'
+});
 
 const App = () => {
+  //let signed=false;
   // Game State
   const [boards, setBoards] = useState<BoardState[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
@@ -22,6 +30,7 @@ const App = () => {
   const [showBoardConfig, setShowBoardConfig] = useState(false);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(1);
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
+  const [signedState, setSignedState] = useState<boolean>(false);
 
   // Economy State
   const [coins, setCoins] = useState(1000);
@@ -36,6 +45,9 @@ const App = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [winner, setWinner] = useState('');
+
+  //auth user 
+  const [user, setUser] = useState<any>(null);
 
   // Load economy data and initialize game
   useEffect(() => {
@@ -56,15 +68,29 @@ const App = () => {
     loadData();
   }, []);
 
-  // Save economy data when changed
-  useEffect(() => {
-    saveEconomy(coins, experience);
-  }, [coins, experience]);
-
   // Reset game when board configuration changes
   useEffect(() => {
     resetGame(numberOfBoards, boardSize);
   }, [numberOfBoards, boardSize]);
+
+  // Subscribe to Firebase Auth state changes
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged((usr) => {
+      setUser(usr);
+    });
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  useEffect(() => {
+    saveEconomy(coins, experience);
+    // If user is signed in, update their Firebase document
+    if (user) {
+      firestore()
+        .collection('users')
+        .doc(user.uid)
+        .set({ coins, experience }, { merge: true });
+    }
+  }, [coins, experience, user]);
 
   const checkWin = (board: BoardState) => {
     const size = boardSize;
@@ -103,12 +129,12 @@ const App = () => {
       const isComputerWinner = gameMode === 'vsComputer' && winner === 2;
       const rewards = calculateRewards(isHumanWinner, difficulty, numberOfBoards, boardSize);
 
-      if (isHumanWinner){ 
+      if (isHumanWinner) {
         setCoins(c => c + rewards.coins);
         setExperience(e => e + rewards.xp);
       }
-      if(isComputerWinner){
-        setExperience(e => Math.round( e + rewards.xp * 0.25 ));
+      if (isComputerWinner) {
+        setExperience(e => Math.round(e + rewards.xp * 0.25));
       }
       const winnerName = winner === 1 ? player1Name : player2Name;
       setWinner(winnerName);
@@ -122,7 +148,7 @@ const App = () => {
   useEffect(() => {
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
       const move = findBestMove(boards, difficulty, boardSize)
-      if (move) {handleMove(move.boardIndex, move.cellIndex);}
+      if (move) { handleMove(move.boardIndex, move.cellIndex); }
     }
   }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
 
@@ -153,7 +179,7 @@ const App = () => {
       Alert.alert('No Moves', 'There are no moves to undo!');
     }
   };
-  
+
   const handleSkip = () => {
     if (coins >= 200) {
       setCoins(c => c - 200);
@@ -165,6 +191,50 @@ const App = () => {
 
   const handleResetNames = () => {
     setShowNameModal(true);
+  };
+  const handleSignOut = async () => {
+    try {
+      await GoogleSignin.signOut();
+      await auth().signOut();
+      setUser(null);
+      setSignedState(false);
+      setCoins(1000);
+      setExperience(0);
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+  const handleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      await GoogleSignin.signIn();
+      const { idToken } = await GoogleSignin.getTokens(); // Get idToken separately
+      if (!idToken) {
+        throw new Error("Google Sign-In failed: No ID Token received.");
+      }
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+      const currentUser = userCredential.user;
+      if (currentUser) setSignedState(true);
+      setUser(currentUser);
+
+      // Check if economy data exists in Firebase for this user
+      const userRef = firestore().collection('users').doc(currentUser.uid);
+      const doc = await userRef.get();
+      if (doc.exists) {
+        // Cloud data exists → Overwrite local data
+        const cloudData = doc.data();
+        if (cloudData) {
+          setCoins(cloudData.coins);
+          setExperience(cloudData.experience);
+        }
+      } else {
+        // No cloud data → Upload local data to Firebase
+        await userRef.set({ coins, experience });
+      }
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+    }
   };
 
   return (
@@ -191,7 +261,7 @@ const App = () => {
           onResetNames={handleResetNames}
           gameHistoryLength={gameHistory.length}
           onSkip={handleSkip}
-          canSkip={coins>=200}
+          canSkip={coins >= 200}
         />
       ) : (
         <Menu
@@ -205,6 +275,9 @@ const App = () => {
             resetGame(numberOfBoards, boardSize);
           }}
           showTutorial={() => setShowTutorial(true)}
+          signIn={handleSignIn}
+          signOut={handleSignOut}
+          signed={signedState}
         />
       )}
 

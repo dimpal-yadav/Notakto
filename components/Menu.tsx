@@ -5,9 +5,12 @@ import LinearGradient from 'react-native-linear-gradient';
 type MenuProps = {
   startGame: (mode: 'vsPlayer' | 'vsComputer') => void;
   showTutorial: () => void;
+  signed: boolean;
+  signIn: () => void;
+  signOut: () => void;
 };
 
-const Menu = ({ startGame, showTutorial }: MenuProps) => (
+const Menu = ({ startGame, showTutorial, signed, signIn, signOut }: MenuProps) => (
   <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>
     <View style={styles.menuContainer}>
       <Text style={styles.title}>Notaktotic</Text>
@@ -26,6 +29,17 @@ const Menu = ({ startGame, showTutorial }: MenuProps) => (
           <Text style={styles.menuButtonText}>Tutorial</Text>
         </TouchableOpacity>
       </LinearGradient>
+      {(signed) ?
+        (<LinearGradient colors={['#FF6347', '#8B0000']} style={styles.menuButton}>
+          <TouchableOpacity onPress={signOut}>
+            <Text style={styles.menuButtonText}>signOut</Text>
+          </TouchableOpacity>
+        </LinearGradient>) :
+        (<LinearGradient colors={['#FF6347', '#8B0000']} style={styles.menuButton}>
+          <TouchableOpacity onPress={signIn}>
+            <Text style={styles.menuButtonText}>signIn</Text>
+          </TouchableOpacity>
+        </LinearGradient>)}
     </View>
   </LinearGradient>
 );
