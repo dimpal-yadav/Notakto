@@ -277,7 +277,7 @@ const App = () => {
           showTutorial={() => setShowTutorial(true)}
           signIn={handleSignIn}
           signOut={handleSignOut}
-          signed={signedState}
+          signed={!!user}
         />
       )}
 
