@@ -13,6 +13,9 @@ import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './types';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import Sound from 'react-native-sound';
+
+Sound.setCategory("Playback");
 
 GoogleSignin.configure({
   webClientId: '200189691429-6if4geqfh2dvnuqp5bev5oa7mnjove4q.apps.googleusercontent.com'
@@ -30,7 +33,6 @@ const App = () => {
   const [showBoardConfig, setShowBoardConfig] = useState(false);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(1);
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
-  const [signedState, setSignedState] = useState<boolean>(false);
 
   // Economy State
   const [coins, setCoins] = useState(1000);
@@ -92,6 +94,15 @@ const App = () => {
     }
   }, [coins, experience, user]);
 
+  
+  // AI Move Handler
+  useEffect(() => {
+    if (gameMode === 'vsComputer' && currentPlayer === 2) {
+      const move = findBestMove(boards, difficulty, boardSize)
+      if (move) { handleMove(move.boardIndex, move.cellIndex); }
+    }
+  }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
+
   const checkWin = (board: BoardState) => {
     const size = boardSize;
     // Check rows and columns
@@ -118,7 +129,7 @@ const App = () => {
         ...board.slice(cellIndex + 1)
       ] : [...board]
     );
-
+    playMoveSound();
     setBoards(newBoards);
     setGameHistory([...gameHistory, newBoards]);
 
@@ -139,18 +150,12 @@ const App = () => {
       const winnerName = winner === 1 ? player1Name : player2Name;
       setWinner(winnerName);
       setShowWinnerModal(true);
+      playWinSound();
       return;
     }
 
     setCurrentPlayer(prev => prev === 1 ? 2 : 1);
   };
-  // AI Move Handler
-  useEffect(() => {
-    if (gameMode === 'vsComputer' && currentPlayer === 2) {
-      const move = findBestMove(boards, difficulty, boardSize)
-      if (move) { handleMove(move.boardIndex, move.cellIndex); }
-    }
-  }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
 
   const resetGame = (num: number, size: BoardSize) => {
     const initialBoards = Array(num).fill(null).map(() => Array(size * size).fill(''));
@@ -197,7 +202,6 @@ const App = () => {
       await GoogleSignin.signOut();
       await auth().signOut();
       setUser(null);
-      setSignedState(false);
       setCoins(1000);
       setExperience(0);
     } catch (error) {
@@ -215,7 +219,6 @@ const App = () => {
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const userCredential = await auth().signInWithCredential(googleCredential);
       const currentUser = userCredential.user;
-      if (currentUser) setSignedState(true);
       setUser(currentUser);
 
       // Check if economy data exists in Firebase for this user
@@ -236,7 +239,26 @@ const App = () => {
       console.error('Google Sign-In error:', error);
     }
   };
-
+  const playMoveSound =() => {
+    const sound= new Sound (require("./click.mp3"),(error)=>{
+      if(error){
+        console.log("Failed to load sound",error);  
+        return;
+      }
+      sound.play(()=>sound.release());
+      console.log("success click sound");
+    })
+  }
+  const playWinSound =() => {
+    const sound= new Sound (require("./wins.mp3"),(error)=>{
+      if(error){
+        console.log("Failed to load sound",error);  
+        return;
+      }
+      sound.play(()=>sound.release());
+      console.log("success win sound");
+    })
+  }
   return (
     <View style={styles.container}>
       {gameMode ? (
