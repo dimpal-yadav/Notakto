@@ -22,7 +22,6 @@ GoogleSignin.configure({
 });
 
 const App = () => {
-  //let signed=false;
   // Game State
   const [boards, setBoards] = useState<BoardState[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
@@ -240,7 +239,7 @@ const App = () => {
     }
   };
   const playMoveSound =() => {
-    const sound= new Sound (require("./click.mp3"),(error)=>{
+    const sound= new Sound (require("./android/app/src/main/res/raw/click.mp3"),(error)=>{
       if(error){
         console.log("Failed to load sound",error);  
         return;
@@ -250,7 +249,7 @@ const App = () => {
     })
   }
   const playWinSound =() => {
-    const sound= new Sound (require("./wins.mp3"),(error)=>{
+    const sound= new Sound (require("./android/app/src/main/res/raw/wins.mp3"),(error)=>{
       if(error){
         console.log("Failed to load sound",error);  
         return;
