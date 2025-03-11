@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert,InteractionManager } from 'react-native';
 import Menu from './components/Menu';
 import Game from './components/Game';
 import TutorialModal from './components/modals/TutorialModal';
@@ -98,13 +98,15 @@ const App = () => {
   // AI Move Handler
   useEffect(() => {
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
-      setTimeout(() => {
-        const move = findBestMove(boards, difficulty, boardSize);
+      InteractionManager.runAfterInteractions(() => {
+        const move = findBestMove(boards, difficulty, boardSize,numberOfBoards);
         if(move==null)return;
         handleMove(move.boardIndex, move.cellIndex);
-      }, 0);
+      });
     }
   }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
+ 
+  
 
   const checkWin = (board: BoardState) => {
     const size = boardSize;
