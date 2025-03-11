@@ -247,7 +247,6 @@ const App = () => {
         return;
       }
       sound.play(()=>sound.release());
-      console.log("success click sound");
     })
   }
   const playWinSound =() => {
@@ -258,7 +257,6 @@ const App = () => {
         return;
       }
       sound.play(()=>sound.release());
-      console.log("success win sound");
     })
   }
   return (
