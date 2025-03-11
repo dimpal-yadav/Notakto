@@ -98,8 +98,11 @@ const App = () => {
   // AI Move Handler
   useEffect(() => {
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
-      const move = findBestMove(boards, difficulty, boardSize)
-      if (move) { handleMove(move.boardIndex, move.cellIndex); }
+      setTimeout(() => {
+        const move = findBestMove(boards, difficulty, boardSize);
+        if(move==null)return;
+        handleMove(move.boardIndex, move.cellIndex);
+      }, 0);
     }
   }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
 
