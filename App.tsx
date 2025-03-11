@@ -31,21 +31,22 @@ const App = () => {
   const [boardSize, setBoardSize] = useState<BoardSize>(3);
   const [showBoardConfig, setShowBoardConfig] = useState(false);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(1);
-  const [showDifficultyModal, setShowDifficultyModal] = useState(false);
+  const [showDifficultyModal, setShowDifficultyModal] = useState<boolean>(false);
+  const [mute,setMute]=useState<boolean>(false);
 
   // Economy State
   const [coins, setCoins] = useState(1000);
   const [experience, setExperience] = useState(0);
 
   // Player State
-  const [player1Name, setPlayer1Name] = useState('Player 1');
-  const [player2Name, setPlayer2Name] = useState('Player 2');
+  const [player1Name, setPlayer1Name] = useState<string>('Player 1');
+  const [player2Name, setPlayer2Name] = useState<string>('Player 2');
 
   // Modal States
-  const [showNameModal, setShowNameModal] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [showWinnerModal, setShowWinnerModal] = useState(false);
-  const [winner, setWinner] = useState('');
+  const [showNameModal, setShowNameModal] = useState<boolean>(false);
+  const [showTutorial, setShowTutorial] = useState<boolean>(false);
+  const [showWinnerModal, setShowWinnerModal] = useState<boolean>(false);
+  const [winner, setWinner] = useState<string>('');
 
   //auth user 
   const [user, setUser] = useState<any>(null);
@@ -239,6 +240,7 @@ const App = () => {
     }
   };
   const playMoveSound =() => {
+    if(mute)return;
     const sound= new Sound (require("./android/app/src/main/res/raw/click.mp3"),(error)=>{
       if(error){
         console.log("Failed to load sound",error);  
@@ -249,6 +251,7 @@ const App = () => {
     })
   }
   const playWinSound =() => {
+    if(mute)return;
     const sound= new Sound (require("./android/app/src/main/res/raw/wins.mp3"),(error)=>{
       if(error){
         console.log("Failed to load sound",error);  
@@ -283,6 +286,8 @@ const App = () => {
           gameHistoryLength={gameHistory.length}
           onSkip={handleSkip}
           canSkip={coins >= 200}
+          toggleMute={()=>setMute(!mute)}
+          isMuted={mute}
         />
       ) : (
         <Menu

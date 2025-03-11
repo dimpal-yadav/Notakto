@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Board from './Board';
 
@@ -25,11 +25,12 @@ type GameProps = {
   canUndo: boolean;
   canSkip: boolean;
   gameHistoryLength: number;
+  toggleMute: ()=> void;
+  isMuted: boolean;
 };
 
 const Game = (props: GameProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { width: screenWidth } = Dimensions.get('window');
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -102,6 +103,9 @@ const Game = (props: GameProps) => {
                     <Text style={styles.menuButtonText}>AI Level: {props.difficulty}</Text>
                   </TouchableOpacity>
                 )}
+                <TouchableOpacity onPress={props.toggleMute} style={styles.menuButton}>
+                  <Text style={styles.menuButtonText}>Sound: {props.isMuted ? 'Off' : 'On'}</Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={props.exitToMenu} style={styles.menuButton}>
                   <Text style={styles.menuButtonText}>Main Menu</Text>
                 </TouchableOpacity>
