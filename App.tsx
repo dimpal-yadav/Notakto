@@ -275,7 +275,7 @@ const App = () => {
           onUndo={handleUndo}
           undoMove={handleUndo}
           resetGame={() => resetGame(numberOfBoards, boardSize)}
-          exitToMenu={() => setGameMode(null)}
+          exitToMenu={() => {setGameMode(null)}}
           gameMode={gameMode}
           numberOfBoards={numberOfBoards}
           boardSize={boardSize}
@@ -296,7 +296,7 @@ const App = () => {
         <Menu
           startGame={(mode) => {
             if (mode === 'vsPlayer') setShowNameModal(true);
-            else {
+            else if (mode ==='vsComputer'){
               setPlayer1Name('You');
               setPlayer2Name('Computer');
             }
@@ -309,7 +309,7 @@ const App = () => {
           signed={!!user}
         />
       )}
-
+      
       <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
       <PlayerNamesModal
         visible={showNameModal}

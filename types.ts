@@ -1,6 +1,6 @@
 // types.ts
 export type BoardState = Array<string>; // Represents a single 3x3 board
-export type GameMode = 'vsComputer' | 'vsPlayer' | null;
+export type GameMode = 'vsComputer' | 'vsPlayer' | 'liveMatch' | null;
 
 // Extended type definitions for full type safety
 export type Player = {

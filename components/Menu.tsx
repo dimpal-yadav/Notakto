@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-nati
 import LinearGradient from 'react-native-linear-gradient';
 
 type MenuProps = {
-  startGame: (mode: 'vsPlayer' | 'vsComputer') => void;
+  startGame: (mode: 'vsPlayer' | 'vsComputer'| 'liveMatch') => void;
   showTutorial: () => void;
   signed: boolean;
   signIn: () => void;
@@ -22,6 +22,11 @@ const Menu = ({ startGame, showTutorial, signed, signIn, signOut }: MenuProps) =
       <LinearGradient colors={['#B19CD9', '#9B59B6']} style={styles.menuButton}>
         <TouchableOpacity onPress={() => startGame('vsComputer')}>
           <Text style={styles.menuButtonText}>Play vs Computer</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+      <LinearGradient colors={['#FFB347', '#FFCC33']} style={styles.menuButton}>
+        <TouchableOpacity onPress={() => startGame('liveMatch')}>
+          <Text style={styles.menuButtonText}>Live Match</Text>
         </TouchableOpacity>
       </LinearGradient>
       <LinearGradient colors={['#7ED321', '#417505']} style={styles.menuButton}>

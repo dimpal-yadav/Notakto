@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Board from './Board';
+import LiveMode from './LiveMode';
 
 type GameProps = {
   currentPlayer: string;
@@ -11,7 +12,7 @@ type GameProps = {
   undoMove: () => void;
   resetGame: () => void;
   exitToMenu: () => void;
-  gameMode: 'vsComputer' | 'vsPlayer' | null;
+  gameMode: 'vsComputer' | 'vsPlayer' | 'liveMatch' | null;
   numberOfBoards: number;
   onBoardConfigPress: () => void;
   difficulty?: number;
@@ -35,7 +36,9 @@ const Game = (props: GameProps) => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
+  if (props.gameMode === 'liveMatch') {
+    return <LiveMode onClose={props.exitToMenu}/>;
+  }
   return (
     <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>
       <View style={styles.container}>
