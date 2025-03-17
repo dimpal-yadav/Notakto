@@ -1,12 +1,9 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/tutorialModal';
+import type { TutorialModalProps } from '../../services/types';
 
-type TutorialModalProps = {
-  visible: boolean;
-  onClose: () => void;
-};
 
 const TutorialModal = ({ visible, onClose }: TutorialModalProps) => (
   <Modal visible={visible} transparent animationType="slide">

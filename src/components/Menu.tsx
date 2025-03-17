@@ -2,14 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../styles/menu';
+import { MenuProps } from '../services/types';
 
-type MenuProps = {
-  startGame: (mode: 'vsPlayer' | 'vsComputer'| 'liveMatch') => void;
-  showTutorial: () => void;
-  signed: boolean;
-  signIn: () => void;
-  signOut: () => void;
-};
 
 const Menu = ({ startGame, showTutorial, signed, signIn, signOut }: MenuProps) => (
   <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>

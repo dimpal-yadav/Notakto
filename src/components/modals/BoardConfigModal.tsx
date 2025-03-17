@@ -1,24 +1,11 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
-import type { BoardSize } from '../../services/types';
+import type { BoardSize, BoardConfigModalProps } from '../../services/types';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/boardconfigmodel';
 
-type BoardConfigModalProps = {
-  visible: boolean;
-  currentBoards: number;
-  currentSize: BoardSize;
-  onConfirm: (num: number, size: BoardSize) => void;
-  onCancel: () => void;
-};
 
-const BoardConfigModal = ({ 
-  visible, 
-  currentBoards,
-  currentSize,
-  onConfirm,
-  onCancel 
-}: BoardConfigModalProps) => {
+const BoardConfigModal = ({visible, currentBoards, currentSize, onConfirm, onCancel}: BoardConfigModalProps) => {
   const [selectedBoards, setSelectedBoards] = useState(currentBoards);
   const [selectedSize, setSelectedSize] = useState<BoardSize>(currentSize);
 

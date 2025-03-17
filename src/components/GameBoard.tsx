@@ -2,13 +2,8 @@ import React from 'react';
 import { View} from 'react-native';
 import Board  from './Board';
 import {styles} from '../styles/gameboard'
+import { GameBoardProps } from '../services/types';
 
-type GameBoardProps = {
-  boards: Array<Array<string>>;
-  makeMove: (boardIndex: number, cellIndex: number) => void;
-  isBoardDead: (board: Array<string>) => boolean;
-  boardSize: number;
-};
 
 export const GameBoard = ({ boards, makeMove, isBoardDead, boardSize }: GameBoardProps) => (
   <View style={styles.boardsContainer}>

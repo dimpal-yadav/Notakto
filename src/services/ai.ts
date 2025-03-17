@@ -1,5 +1,5 @@
 // ai.ts
-import type { BoardState, DifficultyLevel, BoardSize } from './src/types';
+import type { BoardState, DifficultyLevel, BoardSize } from '../services/types';
 
 // Optimization: Cache win patterns for different board sizes
 const winPatternsCache = new Map<number, number[][]>();

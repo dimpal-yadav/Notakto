@@ -3,12 +3,9 @@ import { View, Text, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } fr
 import { io } from "socket.io-client";
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../styles/livemode';
+import { LiveProps } from '../services/types';
 
 const socket = io("https://deciduous-incongruous-herring.glitch.me/");
-
-type LiveProps = {
-    onClose: () => void;
-};
 
 const LiveMode = ({ onClose }: LiveProps) => {
     const [boards, setBoards] = useState(Array(3).fill('').map(() => ({ grid: Array(9).fill(""), blocked: false })));

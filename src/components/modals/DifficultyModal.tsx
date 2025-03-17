@@ -2,12 +2,8 @@ import React from 'react';
 import { Modal, View, Text, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/difficultymodal';
+import { DifficultyModalProps } from '../../services/types';
 
-type DifficultyModalProps = {
-  visible: boolean;
-  onSelect: (level: number) => void;
-  onClose: () => void;
-};
 
 export const DifficultyModal = ({ visible, onSelect, onClose }: DifficultyModalProps) => (
   <Modal visible={visible} transparent animationType="slide">

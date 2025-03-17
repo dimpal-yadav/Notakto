@@ -2,13 +2,8 @@ import React from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/winnerModal';
+import type { WinnerModalProps } from '../../services/types';
 
-type WinnerModalProps = {
-  visible: boolean;
-  winner: string;
-  onPlayAgain: () => void;
-  onMenu: () => void;
-};
 
 const WinnerModal = ({ visible, winner, onPlayAgain, onMenu }: WinnerModalProps) => (
     <Modal visible={visible} transparent animationType="slide">

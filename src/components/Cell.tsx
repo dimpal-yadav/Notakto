@@ -1,15 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, Dimensions } from 'react-native';
-import {styles} from '../styles/cell'
-
-type CellProps = {
-  boardIndex: number;
-  cellIndex: number;
-  value: string;
-  onPress: (boardIndex: number, cellIndex: number) => void;
-  disabled: boolean;
-  boardSize: number;
-};
+import {styles} from '../styles/cell';
+import { CellProps } from '../services/types';
 
 const Cell = ({ boardIndex, cellIndex, value, onPress, disabled, boardSize }: CellProps) => {
   const screenWidth = Dimensions.get('window').width;

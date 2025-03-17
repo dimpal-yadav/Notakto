@@ -4,32 +4,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Board from './Board';
 import LiveMode from './LiveMode';
 import {styles} from '../styles/game';
+import { GameProps } from '../services/types';
 
-type GameProps = {
-  currentPlayer: string;
-  boards: string[][];
-  makeMove: (boardIndex: number, cellIndex: number) => void;
-  isBoardDead: (board: string[]) => boolean;
-  undoMove: () => void;
-  resetGame: () => void;
-  exitToMenu: () => void;
-  gameMode: 'vsComputer' | 'vsPlayer' | 'liveMatch' | null;
-  numberOfBoards: number;
-  onBoardConfigPress: () => void;
-  difficulty?: number;
-  onDifficultyPress?: () => void;
-  boardSize: number;
-  onResetNames: () => void;
-  onUndo: () => void;
-  onSkip: () => void;
-  coins: number;
-  experience: number;
-  canUndo: boolean;
-  canSkip: boolean;
-  gameHistoryLength: number;
-  toggleMute: ()=> void;
-  isMuted: boolean;
-};
 
 const Game = (props: GameProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

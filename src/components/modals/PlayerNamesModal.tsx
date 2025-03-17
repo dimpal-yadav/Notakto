@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/playerNamesModal';
+import type { PlayerNamesModalProps } from '../../services/types';
 
-type PlayerNamesModalProps = {
-  visible: boolean;
-  onSubmit: (p1: string, p2: string) => void;
-  initialNames?: [string, string];
-};
 
 const PlayerNamesModal = ({ visible, onSubmit, initialNames }: PlayerNamesModalProps) => {
   const [player1, setPlayer1] = useState(initialNames?.[0] || 'Player 1');

@@ -34,8 +34,8 @@ const App = () => {
   const [mute,setMute]=useState<boolean>(false);
 
   // Economy State
-  const [coins, setCoins] = useState(1000);
-  const [experience, setExperience] = useState(0);
+  const [coins, setCoins] = useState<number>(1000);
+  const [experience, setExperience] = useState<number>(0);
 
   // Player State
   const [player1Name, setPlayer1Name] = useState<string>('Player 1');
@@ -107,7 +107,7 @@ const App = () => {
  
   
 
-  const checkWin = (board: BoardState) => {
+  const isBoardDead = (board: BoardState) => {
     const size = boardSize;
     // Check rows and columns
     for (let i = 0; i < size; i++) {
@@ -120,8 +120,6 @@ const App = () => {
     const diag2 = Array.from({ length: size }, (_, i) => board[(i + 1) * (size - 1)]);
     return diag1.every(c => c === 'X') || diag2.every(c => c === 'X');
   };
-
-  const isBoardDead = (board: BoardState) => checkWin(board);
 
   const handleMove = (boardIndex: number, cellIndex: number) => {
     if (boards[boardIndex][cellIndex] !== '' || isBoardDead(boards[boardIndex])) return;
@@ -197,10 +195,6 @@ const App = () => {
       Alert.alert('Insufficient Coins', 'You need at least 200 coins to skip a move!');
     }
   };
-
-  const handleResetNames = () => {
-    setShowNameModal(true);
-  };
   const handleSignOut = async () => {
     try {
       await GoogleSignin.signOut();
@@ -264,7 +258,7 @@ const App = () => {
           coins={coins}
           experience={experience}
           canUndo={coins >= 100}
-          onResetNames={handleResetNames}
+          onResetNames={()=>setShowNameModal(true)}
           gameHistoryLength={gameHistory.length}
           onSkip={handleSkip}
           canSkip={coins >= 200}

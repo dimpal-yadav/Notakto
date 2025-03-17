@@ -1,16 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
 import Cell from './Cell';
-import type { BoardState } from '../services/types';
+import type {BoardProps } from '../services/types';
 import {styles} from '../styles/board'
 
-type BoardProps = {
-  boardIndex: number;
-  boardState: BoardState;
-  makeMove: (boardIndex: number, cellIndex: number) => void;
-  isDead: boolean;
-  boardSize: number;
-};
 
 const Board = ({ boardIndex, boardState, makeMove, isDead, boardSize }: BoardProps) => {
   return (
