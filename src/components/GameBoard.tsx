@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View} from 'react-native';
 import Board  from './Board';
+import {styles} from '../styles/gameboard'
 
 type GameBoardProps = {
   boards: Array<Array<string>>;
@@ -24,12 +25,3 @@ export const GameBoard = ({ boards, makeMove, isBoardDead, boardSize }: GameBoar
   </View>
 );
 
-const styles = StyleSheet.create({
-  boardsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-    marginBottom: 20,
-  },
-});

@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Cell from './Cell';
-import type { BoardState } from '../types';
+import type { BoardState } from '../services/types';
+import {styles} from '../styles/board'
 
 type BoardProps = {
   boardIndex: number;
@@ -36,25 +37,6 @@ const Board = ({ boardIndex, boardState, makeMove, isDead, boardSize }: BoardPro
   );
 };
 
-const styles = StyleSheet.create({
-  board: {
-    backgroundColor: '#fff',
-    padding: 8,
-    borderRadius: 8,
-    margin: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  deadBoard: {
-    opacity: 0.6,
-    backgroundColor: '#f8f8f8',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-});
+
 
 export default Board;

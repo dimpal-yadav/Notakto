@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import { TouchableOpacity, Text, Dimensions } from 'react-native';
+import {styles} from '../styles/cell'
 
 type CellProps = {
   boardIndex: number;
@@ -26,19 +27,5 @@ const Cell = ({ boardIndex, cellIndex, value, onPress, disabled, boardSize }: Ce
   );
 };
 
-const styles = StyleSheet.create({
-  cell: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    margin: 2,
-  },
-  cellText: {
-    fontWeight: 'bold',
-    color: '#333',
-  },
-});
 
 export default Cell;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert,InteractionManager } from 'react-native';
+import { View, Alert,InteractionManager } from 'react-native';
 import Menu from './components/Menu';
 import Game from './components/Game';
 import TutorialModal from './components/modals/TutorialModal';
@@ -7,15 +7,14 @@ import PlayerNamesModal from './components/modals/PlayerNamesModal';
 import WinnerModal from './components/modals/WinnerModal';
 import BoardConfigModal from './components/modals/BoardConfigModal';
 import { DifficultyModal } from './components/modals/DifficultyModal';
-import { findBestMove } from './ai';
-import { loadEconomy, saveEconomy, calculateRewards } from './economyUtils';
-import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './types';
+import { findBestMove } from './services/ai';
+import { loadEconomy, saveEconomy, calculateRewards } from './services/economyUtils';
+import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './services/types';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import Sound from 'react-native-sound';
-
-Sound.setCategory("Playback");
+import {playMoveSound, playWinSound} from './services/sounds';
+import {styles} from './styles/app'
 
 GoogleSignin.configure({
   webClientId: '200189691429-6if4geqfh2dvnuqp5bev5oa7mnjove4q.apps.googleusercontent.com'
@@ -134,7 +133,7 @@ const App = () => {
         ...board.slice(cellIndex + 1)
       ] : [...board]
     );
-    playMoveSound();
+    playMoveSound(mute);
     setBoards(newBoards);
     setGameHistory([...gameHistory, newBoards]);
 
@@ -155,7 +154,7 @@ const App = () => {
       const winnerName = winner === 1 ? player1Name : player2Name;
       setWinner(winnerName);
       setShowWinnerModal(true);
-      playWinSound();
+      playWinSound(mute);
       return;
     }
 
@@ -244,26 +243,6 @@ const App = () => {
       console.error('Google Sign-In error:', error);
     }
   };
-  const playMoveSound =() => {
-    if(mute)return;
-    const sound= new Sound (require("./android/app/src/main/res/raw/click.mp3"),(error)=>{
-      if(error){
-        console.log("Failed to load sound",error);  
-        return;
-      }
-      sound.play(()=>sound.release());
-    })
-  }
-  const playWinSound =() => {
-    if(mute)return;
-    const sound= new Sound (require("./android/app/src/main/res/raw/wins.mp3"),(error)=>{
-      if(error){
-        console.log("Failed to load sound",error);  
-        return;
-      }
-      sound.play(()=>sound.release());
-    })
-  }
   return (
     <View style={styles.container}>
       {gameMode ? (
@@ -352,11 +331,6 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-  },
-});
+
 
 export default App;

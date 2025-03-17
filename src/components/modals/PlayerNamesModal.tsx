@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import {styles} from '../../styles/playerNamesModal';
 
 type PlayerNamesModalProps = {
   visible: boolean;
@@ -53,45 +54,5 @@ const PlayerNamesModal = ({ visible, onSubmit, initialNames }: PlayerNamesModalP
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: 'white',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 12,
-    marginBottom: 15,
-    fontSize: 16,
-    backgroundColor: 'white',
-  },
-  modalButton: {
-    padding: 12,
-    borderRadius: 5,
-    alignItems: 'center',
-    backgroundColor: '#c4a2d4'
-  },
-  modalButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
 
 export default PlayerNamesModal;
