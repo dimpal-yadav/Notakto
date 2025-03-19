@@ -1,9 +1,9 @@
-import {StyleSheet, Dimensions } from 'react-native';
-const { width } = Dimensions.get('window');
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   gradientContainer: {
     flex: 1,
+    backgroundColor: 'black'
   },
   menuContainer: {
     flex: 1,
@@ -12,30 +12,24 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#4A4A4A',
+    fontSize: 80,
+    color: 'white',
     textShadowColor: '#FFCC00',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 5,
     marginBottom: 50,
+    fontFamily: 'pixelfont',
   },
   menuButton: {
     paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    width: width * 0.7,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+    alignItems: 'center',   
     marginBottom: 15,
+    backgroundColor: 'blue',
+    width: '85%',
   },
   menuButtonText: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 30,
     color: '#fff',
+    fontFamily: 'pixelfont',
   },
 });

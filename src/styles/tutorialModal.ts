@@ -2,36 +2,38 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: 'rgba(0,0,0,0.7)',
       justifyContent: 'center',
       alignItems: 'center',
     },
     modalContent: {
       padding: 20,
-      borderRadius: 10,
       width: '80%',
+      backgroundColor: 'blue',
     },
     modalTitle: {
-      fontSize: 24,
-      fontWeight: 'bold',
+      fontSize: 30,
+      fontFamily: 'pixelfont',
       marginBottom: 15,
       textAlign: 'center',
-      color: 'black',
+      color: 'red',
     },
     modalText: {
-      fontSize: 16,
+      fontSize: 20,
       lineHeight: 24,
       marginBottom: 20,
-      color: 'black',
+      color: 'white',
+      fontFamily: 'pixelvt',
     },
     modalButton: {
       padding: 12,
       borderRadius: 5,
       alignItems: 'center',
+      backgroundColor: 'red',
     },
     modalButtonText: {
       color: 'white',
-      fontSize: 16,
-      fontWeight: '600',
+      fontSize: 25,
+      fontFamily: 'pixelfont',
     },
   });

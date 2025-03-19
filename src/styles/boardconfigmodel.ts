@@ -3,28 +3,20 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     modalContainer: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: 'rgba(0,0,0,0.8)',
       justifyContent: 'center',
       alignItems: 'center',
     },
     modalContent: {
-      backgroundColor: 'white',
+      backgroundColor: 'black',
       padding: 20,
-      borderRadius: 10,
       width: '90%',
     },
-    title: {
-      fontSize: 22,
-      fontWeight: 'bold',
-      marginBottom: 15,
-      textAlign: 'center',
-      color: 'white'
-    },
     sectionTitle: {
-      fontSize: 16,
-      fontWeight: '600',
+      fontSize: 35,
+      fontFamily: 'pixelfont',
       marginVertical: 10,
-      color: 'white'
+      color: 'red'
     },
     buttonGroup: {
       flexDirection: 'row',
@@ -34,17 +26,18 @@ export const styles = StyleSheet.create({
     },
     sizeButton: {
       padding: 12,
-      borderRadius: 8,
-      backgroundColor: '#e0e0e0',
+      backgroundColor: 'blue',
       minWidth: 60,
       alignItems: 'center',
     },
     selected: {
-      backgroundColor: '#c4a2d4'
+      backgroundColor: 'red'
     },
+
     buttonText: {
-      color: '#333',
-      fontWeight: '500',
+      color: 'white',
+      fontFamily: 'pixelfont',
+      fontSize: 20,
     },
     footer: {
       flexDirection: 'row',
@@ -52,17 +45,15 @@ export const styles = StyleSheet.create({
       marginTop: 15,
     },
     cancelButton: {
-      backgroundColor: '#c4a2d4',
+      backgroundColor: 'blue',
       padding: 12,
-      borderRadius: 8,
       flex: 1,
       marginRight: 8,
       alignItems: 'center',
     },
     confirmButton: {
-      backgroundColor: '#c4a2d4',
+      backgroundColor: 'blue',
       padding: 12,
-      borderRadius: 8,
       flex: 1,
       alignItems: 'center',
     },

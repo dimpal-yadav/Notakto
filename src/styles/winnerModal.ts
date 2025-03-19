@@ -7,22 +7,22 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
     },
     modalContent: {
-      backgroundColor: 'white',
+      backgroundColor: 'black',
       padding: 25,
       borderRadius: 10,
       width: '80%',
       alignItems: 'center',
     },
     modalTitle: {
-      fontSize: 24,
-      fontWeight: 'bold',
+      fontSize: 50,
+      fontFamily: 'pixelvt',
       marginBottom: 10,
-      color: 'black',
+      color: 'red',
     },
     winnerText: {
-      fontSize: 20,
-      color: 'black',
-      fontWeight: '600',
+      fontSize: 30,
+      color: 'red',
+      fontFamily: 'pixelvt',
       marginBottom: 25,
     },
     buttonContainer: {
@@ -31,15 +31,14 @@ export const styles = StyleSheet.create({
       width: '100%',
     },
     button: {
-      backgroundColor: '#4a90e2',
+      backgroundColor: 'blue',
       paddingVertical: 12,
       paddingHorizontal: 20,
-      borderRadius: 5,
       minWidth: 100,
       alignItems: 'center',
     },
     menuButton: {
-      backgroundColor: '#666',
+      backgroundColor: 'blue',
     },
     buttonText: {
       color: 'white',

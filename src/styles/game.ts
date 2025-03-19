@@ -1,30 +1,34 @@
 import { StyleSheet } from "react-native";
-export 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   gradientContainer: {
     flex: 1,
+    backgroundColor: 'black',
   },
   container: {
     flex: 1,
-    padding: 16,
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    marginBottom: -30,
   },
-  economyInfo: {
-    alignItems: 'flex-end',
-  },
+  economyRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -10,
+  },  
   economyText: {
-    fontSize: 16,
-    color: '#4A4A4A',
+    fontSize: 35,
+    color: 'red',
+    fontFamily: 'pixelvt',
   },
   header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#4A4A4A',
+    fontSize: 80,
+    fontFamily: 'pixelvt',
+    color: 'red',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -42,41 +46,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 18,
     paddingHorizontal: 25,
-    borderRadius: 25,
+    backgroundColor: 'blue',
   },
   footerText:{
-    fontSize: 18,
-    color: 'white'
+    fontSize: 35,
+    color: 'white',
+    fontFamily: 'pixelfont',
   },
   menuButton: {
     paddingVertical: 18,
-    paddingHorizontal: 25,
-    borderRadius: 25,
+    backgroundColor: 'blue',
     alignItems: 'center',
-    backgroundColor: '#8E44AD',
   },
   menuButtonText: {
     color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 30,
+    fontFamily: 'pixelvt',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
   },
   overlayBackground: {
     flex: 1,
   },
   menuPanel: {
-    margin: 20,
-    borderRadius: 20,
-    padding: 16,
+    padding: 10,
   },
   menuContent: {
-    paddingHorizontal: 8,
-    gap: 12,
+    paddingHorizontal: 5,
+    gap: 8,
   },
   disabledButton: {
     opacity: 0.6,
+    backgroundColor: '#555',
+    borderColor: '#888',
   },
+  
 });

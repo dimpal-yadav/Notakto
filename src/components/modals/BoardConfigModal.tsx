@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
 import type { BoardSize, BoardConfigModalProps } from '../../services/types';
-import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/boardconfigmodel';
 
 
@@ -12,10 +11,9 @@ const BoardConfigModal = ({visible, currentBoards, currentSize, onConfirm, onCan
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
-        <LinearGradient colors={['#DA70D6', '#7B68EE']} style={styles.modalContent}>
-          <Text style={styles.title}>Game Configuration</Text>
+        <View style={styles.modalContent}>
           
-          <Text style={styles.sectionTitle}>Number of Boards (1-5)</Text>
+          <Text style={styles.sectionTitle}>Number of Boards</Text>
           <View style={styles.buttonGroup}>
             {[1, 2, 3, 4, 5].map(num => (
               <TouchableOpacity
@@ -52,7 +50,7 @@ const BoardConfigModal = ({visible, currentBoards, currentSize, onConfirm, onCan
               <Text style={styles.buttonText}>Apply</Text>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
+        </View>
       </View>
     </Modal>
   );

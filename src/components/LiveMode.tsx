@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { io } from "socket.io-client";
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../styles/livemode';
@@ -80,11 +80,11 @@ const LiveMode = ({ onClose }: LiveProps) => {
                     <Text style={styles.waitingText}>Searching for opponent...</Text>
                 </View>
             )}
-            <LinearGradient colors={['#8E44AD', '#9B59B6']} style={styles.footer}>
+            <View style={styles.footer}>
                 <TouchableOpacity onPress={onClose}>
                     <Text style={styles.footerText}>Leave</Text>
                 </TouchableOpacity>
-            </LinearGradient>
+            </View>
         </View>
     );
 };

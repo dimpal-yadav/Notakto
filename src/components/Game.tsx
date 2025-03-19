@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import Board from './Board';
 import LiveMode from './LiveMode';
-import {styles} from '../styles/game';
+import { styles } from '../styles/game';
 import { GameProps } from '../services/types';
 
 
@@ -14,20 +13,21 @@ const Game = (props: GameProps) => {
     setIsMenuOpen(!isMenuOpen);
   };
   if (props.gameMode === 'liveMatch') {
-    return <LiveMode onClose={props.exitToMenu}/>;
+    return <LiveMode onClose={props.exitToMenu} />;
   }
   return (
-    <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>
+    <View style={styles.gradientContainer}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Text style={styles.header}>{props.currentPlayer}</Text>
-          {props.gameMode === 'vsComputer' && (
-            <View style={styles.economyInfo}>
+        {props.gameMode === 'vsComputer' && (
+            <View style={styles.economyRow}>
               <Text style={styles.economyText}>Coins: {props.coins}</Text>
-              <Text style={styles.economyText}>XP: {props.experience}</Text>
+              <Text style={styles.economyText}> | XP: {props.experience}</Text>
             </View>
           )}
+          <Text style={styles.header}>{props.currentPlayer}</Text>
         </View>
+
 
         <ScrollView contentContainerStyle={styles.boardsContainer}>
           {props.boards.map((board: string[], index: number) => (
@@ -43,19 +43,18 @@ const Game = (props: GameProps) => {
         </ScrollView>
 
         {/* Footer Settings Button */}
-        <LinearGradient colors={['#8E44AD', '#9B59B6']} style={styles.footer}>  
+        <View style={styles.footer}>
           <TouchableOpacity onPress={toggleMenu}>
-            <Text style={styles.footerText}>Game Settings ⚙️</Text>
+            <Text style={styles.footerText}>Settings</Text>
           </TouchableOpacity>
-        </LinearGradient>
-
+        </View>
         {/* Menu */}
         {isMenuOpen && (
           <View style={styles.overlay}>
             <TouchableWithoutFeedback onPress={toggleMenu}>
               <View style={styles.overlayBackground} />
             </TouchableWithoutFeedback>
-            <LinearGradient colors={['#ffffff', '#f8f9fa']} style={styles.menuPanel}>
+            <View style={styles.menuPanel}>
               <View style={styles.menuContent}>
                 <TouchableOpacity onPress={props.onBoardConfigPress} style={styles.menuButton}>
                   <Text style={styles.menuButtonText}>Game Configuration</Text>
@@ -93,11 +92,11 @@ const Game = (props: GameProps) => {
                   <Text style={styles.menuButtonText}>Return to Game</Text>
                 </TouchableOpacity>
               </View>
-            </LinearGradient>
+            </View>
           </View>
         )}
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 

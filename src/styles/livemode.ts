@@ -4,20 +4,21 @@ export const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "black",
     },
     waitingContainer: {
         alignItems: "center",
         gap: 20,
     },
     waitingText: {
-        fontSize: 18,
-        color: "#333",
+        fontSize: 25,
+        color: "white",
+        fontFamily: "pixelvt",
     },
     turnText: {
         fontSize: 24,
         marginBottom: 20,
-        fontWeight: "bold",
+        fontFamily: "pixelvt",
         color: "#333",
     },
     boardsContainer: {
@@ -55,12 +56,13 @@ export const styles = StyleSheet.create({
         left: 0,
         right: 0,
         alignItems: 'center',
-        paddingVertical: 18,
-        paddingHorizontal: 25,
-        borderRadius: 25,
+        paddingVertical: 10,
+        width: '100%',
+        backgroundColor: 'red',
     },
     footerText: {
-        fontSize: 18,
-        color: 'white'
+        fontSize: 30,
+        color: 'white',
+        fontFamily: 'pixelfont',
     },
 });

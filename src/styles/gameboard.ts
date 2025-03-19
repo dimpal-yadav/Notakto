@@ -5,7 +5,5 @@ export const styles = StyleSheet.create({
       flexDirection: 'row',
       flexWrap: 'wrap',
       justifyContent: 'center',
-      gap: 10,
-      marginBottom: 20,
     },
   });

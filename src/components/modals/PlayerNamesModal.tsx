@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/playerNamesModal';
 import type { PlayerNamesModalProps } from '../../services/types';
 
@@ -18,7 +17,7 @@ const PlayerNamesModal = ({ visible, onSubmit, initialNames }: PlayerNamesModalP
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
-        <LinearGradient colors={['#DA70D6', '#7B68EE']} style={styles.modalContent}>
+        <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Enter Player Names</Text>
 
           <TextInput
@@ -44,7 +43,7 @@ const PlayerNamesModal = ({ visible, onSubmit, initialNames }: PlayerNamesModalP
               <Text style={styles.modalButtonText}>Start Game</Text>
             </View>
           </TouchableOpacity>
-        </LinearGradient>
+        </View>
       </View>
     </Modal>
   );

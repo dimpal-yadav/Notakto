@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/pixelfont.ttf",
+      "sha1": "dc62cf64a42e759a47f3149caf39184b51374e4a"
+    },
+    {
+      "path": "src/assets/fonts/pixelperfect.ttf",
+      "sha1": "85d1bf778f687b2d8faf60006ad15b2352a7af65"
+    },
+    {
+      "path": "src/assets/fonts/pixelvt.ttf",
+      "sha1": "5bb9a40e0e143efa116cd09c9e5bec08bbd9443d"
+    }
+  ]
+}

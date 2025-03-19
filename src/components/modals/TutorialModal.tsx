@@ -8,8 +8,8 @@ import type { TutorialModalProps } from '../../services/types';
 const TutorialModal = ({ visible, onClose }: TutorialModalProps) => (
   <Modal visible={visible} transparent animationType="slide">
     <View style={styles.modalContainer}>
-      <LinearGradient colors={['#FFD700', '#FF8C00']} style={styles.modalContent}>
-        <Text style={styles.modalTitle}>How to Play Notakto</Text>
+      <View style={styles.modalContent}>
+        <Text style={styles.modalTitle}>How   to   Play Notakto</Text>
         
         <Text style={styles.modalText}>
           • Both players use X marks{"\n"}
@@ -21,11 +21,11 @@ const TutorialModal = ({ visible, onClose }: TutorialModalProps) => (
         </Text>
 
         <TouchableOpacity onPress={onClose}>
-          <LinearGradient colors={['#00E1FF', '#0078FF']} style={styles.modalButton}>
-            <Text style={styles.modalButtonText}>Got It!</Text>
-          </LinearGradient>
+          <View style={styles.modalButton}>
+            <Text style={styles.modalButtonText}>Close    Tutorial</Text>
+          </View>
         </TouchableOpacity>
-      </LinearGradient>
+      </View>
     </View>
   </Modal>
 );
