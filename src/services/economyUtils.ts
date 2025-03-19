@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BoardSize, DifficultyLevel } from './src/types';
+import { BoardSize, DifficultyLevel } from '../services/types';
 
 const COINS_KEY = '@GameCoins';
 const XP_KEY = '@GameExperience';
