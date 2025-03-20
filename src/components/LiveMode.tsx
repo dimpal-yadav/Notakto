@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { io } from "socket.io-client";
-import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../styles/livemode';
 import { LiveProps } from '../services/types';
+import { SERVER_URL } from '@env';
 
-const socket = io("https://deciduous-incongruous-herring.glitch.me/");
+const socket = io(SERVER_URL);
 
 const LiveMode = ({ onClose }: LiveProps) => {
     const [boards, setBoards] = useState(Array(3).fill('').map(() => ({ grid: Array(9).fill(""), blocked: false })));
@@ -88,7 +88,5 @@ const LiveMode = ({ onClose }: LiveProps) => {
         </View>
     );
 };
-
-
 
 export default LiveMode;
