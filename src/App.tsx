@@ -15,9 +15,10 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {playMoveSound, playWinSound} from './services/sounds';
 import {styles} from './styles/app'
+import { WEB_CLIENT_ID } from '@env';
 
 GoogleSignin.configure({
-  webClientId: '200189691429-6if4geqfh2dvnuqp5bev5oa7mnjove4q.apps.googleusercontent.com'
+  webClientId: WEB_CLIENT_ID,
 });
 
 const App = () => {
