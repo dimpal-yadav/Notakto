@@ -8,10 +8,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "description": "",
   "dependencies": {
-    "cors": "^2.8.5",
+    "axios": "^1.8.4",
+    "axioss": "^0.0.1-security",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "socket.io": "^4.8.1"
   }

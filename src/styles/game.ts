@@ -82,5 +82,9 @@ export const styles = StyleSheet.create({
     backgroundColor: '#555',
     borderColor: '#888',
   },
-  
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

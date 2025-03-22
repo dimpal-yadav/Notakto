@@ -265,6 +265,7 @@ const App = () => {
           canSkip={coins >= 200}
           toggleMute={()=>setMute(!mute)}
           isMuted={mute}
+          onAddCoins={(amount) => setCoins(c => c + amount)}
         />
       ) : (
         <Menu

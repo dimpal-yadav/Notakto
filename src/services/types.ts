@@ -43,6 +43,7 @@ export type GameProps = {
   gameHistoryLength: number;
   toggleMute: ()=> void;
   isMuted: boolean;
+  onAddCoins?: (amount: number) => void;
 };
 export type CellProps = {
   boardIndex: number;
