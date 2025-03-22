@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     board: {
-      backgroundColor: '#black',
+      backgroundColor: 'black',
       marginBottom: 30,
     },
     deadBoard: {

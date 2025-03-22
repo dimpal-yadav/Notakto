@@ -10,7 +10,8 @@ export const styles = StyleSheet.create({
     margin: 2,
   },
   cellText: {
-    fontFamily: 'pixelfont',
+    fontSize: 100,
+    fontFamily: "pixelvt",
     color: 'red',
   },
 });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
 import { io } from "socket.io-client";
 import {styles} from '../styles/livemode';
 import { LiveProps } from '../services/types';
@@ -57,7 +57,7 @@ const LiveMode = ({ onClose }: LiveProps) => {
             {gameState === "playing" ? (
                 <>
                     <Text style={styles.turnText}>{isMyTurn ? "Your Turn" : "Opponent's Turn"}</Text>
-                    <View style={styles.boardsContainer}>
+                    <ScrollView contentContainerStyle={styles.boardsContainer}>
                         {boards.map((board, boardIndex) => (
                             <View key={boardIndex} style={[styles.board, board.blocked && styles.blockedBoard]}>
                                 {board.grid.map((cell, cellIndex) => (
@@ -72,7 +72,7 @@ const LiveMode = ({ onClose }: LiveProps) => {
                                 ))}
                             </View>
                         ))}
-                    </View>
+                    </ScrollView>
                 </>
             ) : (
                 <View style={styles.waitingContainer}>
