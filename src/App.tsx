@@ -98,13 +98,18 @@ const App = () => {
   // AI Move Handler
   useEffect(() => {
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
-      InteractionManager.runAfterInteractions(() => {
-        const move = findBestMove(boards, difficulty, boardSize,numberOfBoards);
-        if(move==null)return;
-        handleMove(move.boardIndex, move.cellIndex);
-      });
+      const timeout = setTimeout(() => {
+        InteractionManager.runAfterInteractions(() => {
+          const move = findBestMove(boards, difficulty, boardSize, numberOfBoards);
+          if (move) {
+            handleMove(move.boardIndex, move.cellIndex);
+          }
+        });
+      }, 500); // 500ms delay before AI makes its move
+  
+      return () => clearTimeout(timeout);
     }
-  }, [currentPlayer, gameMode, boards, difficulty, boardSize]);
+  }, [currentPlayer, gameMode, boards, difficulty, boardSize, numberOfBoards]);
  
   
 
