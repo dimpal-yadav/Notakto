@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert,InteractionManager } from 'react-native';
+import { View, Alert, InteractionManager } from 'react-native';
 import Menu from './components/Menu';
 import Game from './components/Game';
 import TutorialModal from './components/modals/TutorialModal';
@@ -11,11 +11,14 @@ import { findBestMove } from './services/ai';
 import { loadEconomy, saveEconomy, calculateRewards } from './services/economyUtils';
 import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './services/types';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import {playMoveSound, playWinSound} from './services/sounds';
-import {styles} from './styles/app'
+import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from '@react-native-firebase/auth';
+import { getFirestore, doc, setDoc, getDoc } from '@react-native-firebase/firestore';
+import { playMoveSound, playWinSound } from './services/sounds';
+import { styles } from './styles/app'
 import { WEB_CLIENT_ID } from '@env';
+
+const auth = getAuth();
+const firestore = getFirestore();
 
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
@@ -32,7 +35,7 @@ const App = () => {
   const [showBoardConfig, setShowBoardConfig] = useState(false);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(1);
   const [showDifficultyModal, setShowDifficultyModal] = useState<boolean>(false);
-  const [mute,setMute]=useState<boolean>(false);
+  const [mute, setMute] = useState<boolean>(false);
 
   // Economy State
   const [coins, setCoins] = useState<number>(1000);
@@ -77,24 +80,21 @@ const App = () => {
 
   // Subscribe to Firebase Auth state changes
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((usr) => {
+    const subscriber = onAuthStateChanged(auth, (usr: any) => {
       setUser(usr);
     });
-    return subscriber; // unsubscribe on unmount
+    return subscriber;
   }, []);
 
   useEffect(() => {
     saveEconomy(coins, experience);
-    // If user is signed in, update their Firebase document
     if (user) {
-      firestore()
-        .collection('users')
-        .doc(user.uid)
-        .set({ coins, experience }, { merge: true });
+      const userRef = doc(firestore, 'users', user.uid);
+      setDoc(userRef, { coins, experience }, { merge: true });
     }
   }, [coins, experience, user]);
 
-  
+
   // AI Move Handler
   useEffect(() => {
     if (gameMode === 'vsComputer' && currentPlayer === 2) {
@@ -106,12 +106,12 @@ const App = () => {
           }
         });
       }, 500); // 500ms delay before AI makes its move
-  
+
       return () => clearTimeout(timeout);
     }
   }, [currentPlayer, gameMode, boards, difficulty, boardSize, numberOfBoards]);
- 
-  
+
+
 
   const isBoardDead = (board: BoardState) => {
     const size = boardSize;
@@ -204,7 +204,7 @@ const App = () => {
   const handleSignOut = async () => {
     try {
       await GoogleSignin.signOut();
-      await auth().signOut();
+      await signOut(auth);
       setUser(null);
       setCoins(1000);
       setExperience(0);
@@ -220,24 +220,19 @@ const App = () => {
       if (!idToken) {
         throw new Error("Google Sign-In failed: No ID Token received.");
       }
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      const userCredential = await auth().signInWithCredential(googleCredential);
+      const credential = GoogleAuthProvider.credential(idToken);
+      const userCredential = await signInWithCredential(auth, credential);
       const currentUser = userCredential.user;
-      setUser(currentUser);
 
-      // Check if economy data exists in Firebase for this user
-      const userRef = firestore().collection('users').doc(currentUser.uid);
-      const doc = await userRef.get();
-      if (doc.exists) {
-        // Cloud data exists → Overwrite local data
-        const cloudData = doc.data();
-        if (cloudData) {
+      const userRef = doc(firestore, 'users', currentUser.uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists) {
+        const cloudData = docSnap.data();
+        if (cloudData) { 
           setCoins(cloudData.coins);
           setExperience(cloudData.experience);
         }
-      } else {
-        // No cloud data → Upload local data to Firebase
-        await userRef.set({ coins, experience });
       }
     } catch (error) {
       console.error('Google Sign-In error:', error);
@@ -254,7 +249,7 @@ const App = () => {
           onUndo={handleUndo}
           undoMove={handleUndo}
           resetGame={() => resetGame(numberOfBoards, boardSize)}
-          exitToMenu={() => {setGameMode(null)}}
+          exitToMenu={() => { setGameMode(null) }}
           gameMode={gameMode}
           numberOfBoards={numberOfBoards}
           boardSize={boardSize}
@@ -264,11 +259,11 @@ const App = () => {
           coins={coins}
           experience={experience}
           canUndo={coins >= 100}
-          onResetNames={()=>setShowNameModal(true)}
+          onResetNames={() => setShowNameModal(true)}
           gameHistoryLength={gameHistory.length}
           onSkip={handleSkip}
           canSkip={coins >= 200}
-          toggleMute={()=>setMute(!mute)}
+          toggleMute={() => setMute(!mute)}
           isMuted={mute}
           onAddCoins={(amount) => setCoins(c => c + amount)}
         />
@@ -276,7 +271,7 @@ const App = () => {
         <Menu
           startGame={(mode) => {
             if (mode === 'vsPlayer') setShowNameModal(true);
-            else if (mode ==='vsComputer'){
+            else if (mode === 'vsComputer') {
               setPlayer1Name('You');
               setPlayer2Name('Computer');
             }
@@ -289,7 +284,7 @@ const App = () => {
           signed={!!user}
         />
       )}
-      
+
       <TutorialModal visible={showTutorial} onClose={() => setShowTutorial(false)} />
       <PlayerNamesModal
         visible={showNameModal}
