@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Expose the server port (change accordingly)
-EXPOSE 3000
+EXPOSE 5000
 
 # Run the server
-CMD ["node", "server.js"]
+CMD ["node", "payments.js"]

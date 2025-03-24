@@ -97,4 +97,5 @@ function checkGameOver(grid) {
   return patterns.some(p => p.every(i => grid[i] === "X"));
 }
 
-server.listen(3000, () => console.log("Server running on port 3000"));
+const PORT = 8000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

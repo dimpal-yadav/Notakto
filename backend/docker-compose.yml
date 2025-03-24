@@ -1,17 +1,16 @@
-version: '3'
 services:
   websocket:
-    build: rakshitg600/notakto-socket-server
+    image: rakshitg600/notakto-socket-server:latest
     ports:
-      - "8080:8080"
+      - "8000:8000"
     restart: always
     networks:
       - app-network
 
   payments:
-    build: rakshitg600/notakto-socket-server
+    image: rakshitg600/notakto-payment-server:latest
     ports:
-      - "5000:5000"
+      - "6000:6000"
     restart: always
     networks:
       - app-network

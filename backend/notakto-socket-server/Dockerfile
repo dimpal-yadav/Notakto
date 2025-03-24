@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose WebSocket server port
-EXPOSE 8080
+EXPOSE 8000
 
 # Start the WebSocket server
-CMD ["node", "server.js"]
+CMD ["node", "livematch.js"]
