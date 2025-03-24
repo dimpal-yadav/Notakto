@@ -1,5 +1,7 @@
+//dependencies
 import React, { useState, useEffect } from 'react';
 import { View, Alert, InteractionManager } from 'react-native';
+//components
 import Menu from './components/Menu';
 import Game from './components/Game';
 import TutorialModal from './components/modals/TutorialModal';
@@ -7,15 +9,18 @@ import PlayerNamesModal from './components/modals/PlayerNamesModal';
 import WinnerModal from './components/modals/WinnerModal';
 import BoardConfigModal from './components/modals/BoardConfigModal';
 import { DifficultyModal } from './components/modals/DifficultyModal';
+//services, styles, env
 import { findBestMove } from './services/ai';
 import { loadEconomy, saveEconomy, calculateRewards } from './services/economyUtils';
 import type { BoardState, GameMode, DifficultyLevel, BoardSize } from './services/types';
+import { styles } from './styles/app'
+import { WEB_CLIENT_ID } from '@env';
+import { playMoveSound, playWinSound } from './services/sounds';
+import { useCoins, useXP } from './services/store';
+//firebase
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from '@react-native-firebase/auth';
 import { getFirestore, doc, setDoc, getDoc } from '@react-native-firebase/firestore';
-import { playMoveSound, playWinSound } from './services/sounds';
-import { styles } from './styles/app'
-import { WEB_CLIENT_ID } from '@env';
 
 const auth = getAuth();
 const firestore = getFirestore();
@@ -38,8 +43,8 @@ const App = () => {
   const [mute, setMute] = useState<boolean>(false);
 
   // Economy State
-  const [coins, setCoins] = useState<number>(1000);
-  const [experience, setExperience] = useState<number>(0);
+  const { coins, setCoins } = useCoins();
+  const {XP, setXP} = useXP();
 
   // Player State
   const [player1Name, setPlayer1Name] = useState<string>('Player 1');
@@ -60,13 +65,13 @@ const App = () => {
       try {
         const economyData = await loadEconomy();
         setCoins(economyData.coins);
-        setExperience(economyData.experience);
+        setXP(economyData.experience);
         resetGame(numberOfBoards, boardSize);
       } catch (error) {
         console.error('Failed to load data:', error);
         // Initialize with default values if load fails
         setCoins(1000);
-        setExperience(0);
+        setXP(0);
         resetGame(numberOfBoards, boardSize);
       }
     };
@@ -87,12 +92,12 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    saveEconomy(coins, experience);
+    saveEconomy(coins, XP);
     if (user) {
       const userRef = doc(firestore, 'users', user.uid);
-      setDoc(userRef, { coins, experience }, { merge: true });
+      setDoc(userRef, { coins, XP }, { merge: true });
     }
-  }, [coins, experience, user]);
+  }, [coins, XP, user]);
 
 
   // AI Move Handler
@@ -149,11 +154,11 @@ const App = () => {
       const rewards = calculateRewards(isHumanWinner, difficulty, numberOfBoards, boardSize);
 
       if (isHumanWinner) {
-        setCoins(c => c + rewards.coins);
-        setExperience(e => e + rewards.xp);
+        setCoins(coins+rewards.coins);
+        setXP(XP + rewards.xp);
       }
       if (isComputerWinner) {
-        setExperience(e => Math.round(e + rewards.xp * 0.25));
+        setXP(Math.round(XP + rewards.xp * 0.25));
       }
       const winnerName = winner === 1 ? player1Name : player2Name;
       setWinner(winnerName);
@@ -182,7 +187,7 @@ const App = () => {
   const handleUndo = () => {
     if (gameHistory.length >= 3) {
       if (coins >= 100) {
-        setCoins(c => c - 100);
+        setCoins(coins-100);
         setBoards(gameHistory[gameHistory.length - 3]);
         setGameHistory(h => h.slice(0, -2));
       } else {
@@ -195,7 +200,7 @@ const App = () => {
 
   const handleSkip = () => {
     if (coins >= 200) {
-      setCoins(c => c - 200);
+      setCoins(coins-200);
       setCurrentPlayer(prev => prev === 1 ? 2 : 1);
     } else {
       Alert.alert('Insufficient Coins', 'You need at least 200 coins to skip a move!');
@@ -207,7 +212,7 @@ const App = () => {
       await signOut(auth);
       setUser(null);
       setCoins(1000);
-      setExperience(0);
+      setXP(0);
     } catch (error) {
       console.error('Sign out error:', error);
     }
@@ -231,7 +236,7 @@ const App = () => {
         const cloudData = docSnap.data();
         if (cloudData) { 
           setCoins(cloudData.coins);
-          setExperience(cloudData.experience);
+          setXP(cloudData.experience);
         }
       }
     } catch (error) {
@@ -257,7 +262,7 @@ const App = () => {
           difficulty={difficulty}
           onDifficultyPress={() => setShowDifficultyModal(true)}
           coins={coins}
-          experience={experience}
+          experience={XP}
           canUndo={coins >= 100}
           onResetNames={() => setShowNameModal(true)}
           gameHistoryLength={gameHistory.length}
@@ -265,7 +270,7 @@ const App = () => {
           canSkip={coins >= 200}
           toggleMute={() => setMute(!mute)}
           isMuted={mute}
-          onAddCoins={(amount) => setCoins(c => c + amount)}
+          onAddCoins={(amount) => setCoins(coins + amount)}
         />
       ) : (
         <Menu
