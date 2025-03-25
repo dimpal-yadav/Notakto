@@ -1,0 +1,39 @@
+{
+    "project_info": {
+      "project_number": "200189691429",
+      "project_id": "notakto-g600",
+      "storage_bucket": "notakto-g600.firebasestorage.app"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:200189691429:android:5ab3d4901e38f7ad0ce1cc",
+          "android_client_info": {
+            "package_name": "com.notakto"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "200189691429-6if4geqfh2dvnuqp5bev5oa7mnjove4q.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyBiIfdvYJRgrLS4uN7zasRLPjdJOvtnlbE"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "200189691429-6if4geqfh2dvnuqp5bev5oa7mnjove4q.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

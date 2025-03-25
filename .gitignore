@@ -1,8 +1,8 @@
 .env
-*.keystore
-*.jks
-gradle.properties
-google-services.json
+# *.keystore
+# *.jks
+# gradle.properties
+# google-services.json
 # OSX
 #
 .DS_Store
