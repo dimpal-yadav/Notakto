@@ -1,28 +1,50 @@
-## Debug Mode
-# step 1
-enable debug mode in phone 
-# step 2
-connect phone to computer
-# step 3
-open terminal and type `adb devices` to check if phone is connected
-# step 4
-open this folder in cmd with admin privelleges 
-# step 5
-npx react-native run-android in cli
+# 🧙‍♂️ NOTAKTO - THE SPELLBOUND TIC-TAC-TOE ⚡
 
-## Release/Build Mode
-# step 1
-open this folder in cmd with admin privelleges
-# step 2
-add icons in android/app/src/main/res
-# step 3
-sign the app using react-native documentation 
-# step 4
-cd android
-# step 5
-gradlew assembleRelease for apk(s)
-gradlew bundleRelease for aab
-gradlew clean for reseting the changes made by assemble/bundle
+## ✨ Step Into the Enchanted Arena
+In a realm where **Tic-Tac-Toe draws are outlawed**, Notakto is the **ultimate battle of wits**! Cast your moves, outmaneuver your rivals, and let **destiny crown the true champion**. 
+
+---
+
+## 🏰 CHOOSE YOUR SPELLBINDING MODE
+⚔️ **Wizard’s Duel (PvP)** – Challenge a fellow mage in an **intense local battle**.  
+🧠 **Face the Enchanted AI** – Battle a mystical AI with **five levels of mastery**.  
+🔮 **The Arcane Tournament (Multiplayer)** – Test your skills **against random challengers** or **summon an ally using a secret incantation (code-based matchmaking)**.
+
+## 🔥 MAGICAL ENHANCEMENTS
+📜 **Customizable Mystic Boards** – Shape your own battlefield with different sizes and layouts.  
+🎶 **Timeless Chiptune Hymns** – Nostalgic melodies straight from the wizarding archives.  
+🔮 **AI-Powered Strategies** – A mind sharper than Merlin’s quill.  
+🪄 **Undo & Skip Spells** – Harness the power of enchanted coins to manipulate fate.  
+🧙‍♀️ **Earn Magical XP & Gold** – Gain riches based on **strategy, difficulty, and fortune**.  
+🌌 **Web3 Sorcery** – A **blockchain-infused adventure** with NFT-powered magic.  
+💫 **Bewitching Animations** – As smooth as a levitation charm.  
+
+---
+
+## ⚡ UNLOCK THE SECRETS
+```bash
+git clone https://github.com/Rakshitg600/Notakto.git
+cd notakto
+```
+🔗 **[Download the Grimoire](https://shorturl.at/lLOvw)** | 🎥 **[Gaze Into the Crystal Ball](https://shorturl.at/K4gQX)**
+
+---
+
+## 🏛️ THE ALCHEMY BEHIND THE SPELL
+### 🏺 Frontend (The Art of Spellcasting):
+- React Native (CLI), JavaScript, TypeScript, Next.js, Tauri, Tailwind CSS, ShadCN
+### 📖 Backend (Dark Enchantments):
+- Socket.io, Firebase (OAuth 2), Redis, PostgreSQL, Prisma, Node.js, Cloudflare, Docker, Express, Crypto
+### 🧪 Testing (Potion Crafting):
+- Jest, Cypress, Detox, Appium, Xcode, Vitest
+
+---
+
+## 🏆 JOIN THE ORDER OF NOTAKTO
+🔮 Encountered a cursed glitch? Open an issue or **lend your wizardry**.  
+📜 **Protected under the MIT Enchantment** – Free for all spellcasters.  
+
+🎮 **GitHub Repository:** [Notakto](https://github.com/Rakshitg600/Notakto)  
+✨ Let the **wizard duels commence!** 🪄🎲
 
 
-visit linktr.ee/rakshitg600 for app
