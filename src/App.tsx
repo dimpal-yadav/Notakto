@@ -17,6 +17,7 @@ import { playMoveSound, playWinSound } from './services/sounds';
 import { useCoins, useXP } from './services/store';
 // Firebase module
 import { signInWithGoogle, signOutUser, onAuthStateChangedListener, saveEconomyToFirestore, loadEconomyFromFirestore } from './services/firebase';
+import Sound from 'react-native-sound';
 
 const App = () => {
   // Game State
@@ -30,6 +31,7 @@ const App = () => {
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(1);
   const [showDifficultyModal, setShowDifficultyModal] = useState<boolean>(false);
   const [mute, setMute] = useState<boolean>(false);
+  const [backgroundSound, setBackgroundSound] = useState<Sound | null>(null);
 
   // Economy State
   const { coins, setCoins } = useCoins();
@@ -48,6 +50,36 @@ const App = () => {
   // Auth user
   const [user, setUser] = useState<any>(null);
 
+  // Initialize background music on mount
+useEffect(() => {
+  const sound = new Sound(
+    require('../android/app/src/main/res/raw/background.mp3'), // Update path as needed
+    (error) => {
+      if (error) {
+        console.log('Failed to load background music', error);
+        return;
+      }
+      sound.setNumberOfLoops(-1); // Infinite loop
+      setBackgroundSound(sound);
+      if (!mute) sound.play();
+    }
+  );
+
+  return () => {
+    sound.stop(() => sound.release());
+  };
+}, []);
+
+// Handle mute/unmute of background music
+useEffect(() => {
+  if (!backgroundSound) return;
+
+  if (mute) {
+    backgroundSound.pause();
+  } else {
+    backgroundSound.play();
+  }
+}, [mute, backgroundSound]);
   // Load economy data and initialize game
   useEffect(() => {
     const loadData = async () => {
