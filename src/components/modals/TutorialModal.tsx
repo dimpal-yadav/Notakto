@@ -1,6 +1,5 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../../styles/tutorialModal';
 import type { TutorialModalProps } from '../../services/types';
 
