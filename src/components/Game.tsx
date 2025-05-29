@@ -15,13 +15,14 @@ const Game = (props: GameProps) => {
   const handleBuyCoins = async () => {
     setIsProcessingPayment(true);
     try {
-      const response = await fetch(`${PAY_URL}//create-payment`, {
+      const response = await fetch(`${PAY_URL}/create-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+
         body: JSON.stringify({
           amount: "1.00",
           currency: "INR",
-          customerId: "user_123", // Replace with actual user ID if available
+          customerId: "user_123",
           customerName: "Test User"
         })
       });
@@ -41,7 +42,7 @@ const Game = (props: GameProps) => {
   };
   const checkPaymentStatus = async (orderId: string) => {
     try {
-      const response = await fetch(`${PAY_URL}//order-status/${orderId}`);
+      const response = await fetch(`${PAY_URL}/order-status/${orderId}`);
       const data = await response.json();
 
       if (data.status === "paid") {
