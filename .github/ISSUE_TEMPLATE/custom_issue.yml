@@ -1,13 +1,13 @@
-name: ⚙️ Custom Issue
-about: Submit a custom issue or suggestion that doesn’t fit into other categories
-title: "[CUSTOM] "
-labels: ["custom"]
-assignees: []
+---
+name: "🛠️ Custom Issue"
+about: "For requests or suggestions that don't fit bug, feature, or documentation categories."
+title: "[Custom Issue] "
+labels: "custom"
+assignees: ""
 
 ---
 
 ### 🔍 Have You Searched Existing Issues?
-
 - [ ] I have searched the existing issues to avoid duplicates
 
 ---
@@ -27,25 +27,10 @@ Include any relevant context, use case, or scenario where this issue occurs or i
 ### 💡 Proposed Solution (Optional)  
 If you have any ideas or suggestions for solving this issue, describe them here.
 
-### 📂 Category  
-_Select the category that best describes the issue:_
-
-- [ ] Enhancement  
-- [ ] Refactor  
-- [ ] Security  
-- [ ] Design  
-- [ ] Other  
-
 ---
 
-### 📘 Additional Context (Optional)  
-Add any other context, links, screenshots, or information that might be relevant.
-
----
-
-### 🙌 Contributor Checklist (Optional)
-
-- [ ] I have searched existing issues to avoid duplicates  
-- [ ] I agree to follow this project's Code of Conduct  
-- [ ] I am a GSSOC'25 contributor  
-- [ ] I want to work on this issue  
+### 🙌 Contributor Checklist
+- [ ] I have reviewed the existing issues
+- [ ] I agree to follow this project's Code of Conduct
+- [ ] I am a GSSOC'25 contributor
+- [ ] I want to work on this issue
