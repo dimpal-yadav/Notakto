@@ -21,6 +21,24 @@ In a realm where **Tic-Tac-Toe draws are outlawed**, Notakto is the **ultimate b
 
 ---
 
+## 🚀 Getting Started
+
+Ready to make your first contribution to **Akashic Archives** during **GSSOC 2025**? Follow these simple steps to get started:
+
+### 📄 Read our CONTRIBUTING.md
+Familiarize yourself with the contribution guidelines, coding standards, and PR process.
+
+### 🔍 Browse Open Issues
+Look for issues labeled based on your experience level:
+
+- **good first issue** – Ideal for beginners  
+- **help wanted** – For intermediate contributors  
+- **enhancement** or **feature** – For advanced developers  
+
+### 🛠️ Start with a Good First Issue
+Fork the repository, create a new branch, and begin your contribution. Don’t worry — we’re here to help you along the way!
+
+---
 ## ⚡ UNLOCK THE SECRETS
 ```bash
 git clone https://github.com/Rakshitg600/Notakto.git
