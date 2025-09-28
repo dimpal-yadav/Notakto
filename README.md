@@ -23,7 +23,7 @@ In a realm where **Tic-Tac-Toe draws are outlawed**, Notakto is the **ultimate b
 
 ## 🚀 Getting Started
 
-Ready to make your first contribution to **Akashic Archives** during **GSSOC 2025**? Follow these simple steps to get started:
+Ready to make your first contribution to **NOTAKTO** during **GSSOC 2025**? Follow these simple steps to get started:
 
 ### 📄 Read our CONTRIBUTING.md
 Familiarize yourself with the contribution guidelines, coding standards, and PR process.
