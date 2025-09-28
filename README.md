@@ -6,7 +6,7 @@ In a realm where **Tic-Tac-Toe draws are outlawed**, Notakto is the **ultimate b
 ---
 
 ## 🏰 CHOOSE YOUR SPELLBINDING MODE
-⚔️ **Wizard’s Duel (PvP)** – Challenge a fellow mage in an **intense local battle**.  
+⚔️ **Wizard’s Duel (PvP)** – Challenge a fellow mage in an **intense local battle**. 
 🧠 **Face the Enchanted AI** – Battle a mystical AI with **five levels of mastery**.  
 🔮 **The Arcane Tournament (Multiplayer)** – Test your skills **against random challengers** or **summon an ally using a secret incantation (code-based matchmaking)**.
 
